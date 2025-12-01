@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart'; 
 import 'l10n/app_localizations.dart';
 import 'core/constants/app_colors.dart';
+import 'core/constants/app_routes.dart';
 
 void main() {
   runApp(const KrushiKrantiApp());
@@ -17,22 +18,23 @@ class KrushiKrantiApp extends StatelessWidget {
       title: 'Krushi Kranti',
       debugShowCheckedModeBanner: false,
       
-      // --- 🎨 DESIGN SYSTEM FROM FIGMA ---
+      // --- 🎨 DESIGN SYSTEM ---
       theme: ThemeData(
         useMaterial3: true,
+        // We set the Scaffold background here, which is perfectly valid.
         scaffoldBackgroundColor: AppColors.background,
         
         // 1. Color Scheme
         colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.brandGreen, // Use Green for system ripples/focus
-          primary: AppColors.primary,      // Yellow for Buttons
-          secondary: AppColors.brandGreen, // Green for Accents
-          surface: AppColors.surface,
-          background: AppColors.background,
+          seedColor: AppColors.brandGreen, 
+          primary: AppColors.primary,      
+          secondary: AppColors.brandGreen, 
+          surface: AppColors.surface, 
+          // ❌ REMOVED: background: AppColors.background (Deprecated)
+          // Material 3 uses 'surface' for backgrounds now.
         ),
         
-        // 2. Fonts (Essential for Marathi/Hindi support)
-        // Noto Sans is the best choice for Indian languages.
+        // 2. Fonts (Noto Sans)
         textTheme: GoogleFonts.notoSansTextTheme(
           Theme.of(context).textTheme.apply(
             bodyColor: AppColors.textPrimary,
@@ -40,15 +42,15 @@ class KrushiKrantiApp extends StatelessWidget {
           ),
         ),
         
-        // 3. Button Style (Matches your "Get OTP" button)
+        // 3. Button Style (Yellow with Black Text)
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary, // Yellow Background
-            foregroundColor: AppColors.textOnButton, // Black Text
-            elevation: 0, // Flat design
+            backgroundColor: AppColors.primary, 
+            foregroundColor: AppColors.textOnButton, 
+            elevation: 0, 
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12), // Rounded corners like Figma
+              borderRadius: BorderRadius.circular(12), 
             ),
             textStyle: const TextStyle(
               fontSize: 16, 
@@ -57,14 +59,14 @@ class KrushiKrantiApp extends StatelessWidget {
           ),
         ),
         
-        // 4. Input Fields (Text Boxes)
+        // 4. Input Fields
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: const Color(0xFFF5F5F5), // Light grey fill like Figma
+          fillColor: const Color(0xFFF5F5F5), 
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none, // No border by default (clean look)
+            borderSide: BorderSide.none, 
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
@@ -87,23 +89,9 @@ class KrushiKrantiApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
 
-      // --- HOME ---
-      home: const Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Krushi Kranti Design Ready", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              SizedBox(height: 20),
-              // This button will now be Yellow with Black text automatically!
-              ElevatedButton(
-                onPressed: null, 
-                child: Text("Save & Continue"),
-              ),
-            ],
-          ),
-        ),
-      ),
+      // --- 🚀 NAVIGATION SETUP ---
+      initialRoute: AppRoutes.splash, 
+      routes: AppRoutes.routes,
     );
   }
 }
