@@ -50,28 +50,14 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                 Center(
                   child: Image.asset(
                     "assets/images/logo/krushi_logo.png",
-                    height: 180,
-                    width: 180,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // Language Icon (Left)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Image.asset(
-                    "assets/images/auth/lang_icon.png",
-                    height: 120,
-                    width: 120,
+                    height: 240,
                     fit: BoxFit.contain,
                   ),
                 ),
 
                 const SizedBox(height: 30),
 
-                // Title (Dynamic)
+                // Title
                 Text(
                   translations[selectedLang]!["title"]!,
                   style: const TextStyle(
@@ -81,9 +67,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 5),
+                const SizedBox(height: 6),
 
-                // Subtitle (Dynamic)
+                // Subtitle
                 Text(
                   translations[selectedLang]!["subtitle"]!,
                   style: const TextStyle(
@@ -91,23 +77,22 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
 
-                // Language Options (New API: RadioMenuButton)
+                // Language Options
                 _langTile("mr", "मराठी"),
                 _langTile("hi", "हिंदी"),
                 _langTile("en", "English"),
 
                 const SizedBox(height: 40),
 
-                // Button
+                // Continue Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () async {
                       await StorageService.saveLanguage(selectedLang);
 
-                      // Required async safety rule in Flutter 3.22+
                       if (!context.mounted) return;
 
                       Navigator.of(context)
@@ -126,7 +111,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
     );
   }
 
-  // Modern Radio Button (Flutter 3.22+)
+  // Modern Radio Button
   Widget _langTile(String code, String title) {
     return RadioMenuButton<String>(
       value: code,

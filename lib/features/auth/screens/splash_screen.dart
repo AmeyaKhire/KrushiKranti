@@ -47,7 +47,8 @@ class _SplashScreenState extends State<SplashScreen> {
               // Logo
               Image.asset(
                 'assets/images/logo/krushi_logo.png', // update to match your asset
-                width: 180,
+                height: 300,
+                width: 300,
                 fit: BoxFit.contain,
               ),
 
