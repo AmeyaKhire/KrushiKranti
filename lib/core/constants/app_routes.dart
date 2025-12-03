@@ -1,51 +1,50 @@
 import 'package:flutter/material.dart';
 
-// ✅ Import existing screens
+// --- PARTNER'S SCREENS (Auth) ---
+import '../../features/auth/screens/splash_screen.dart';
+import '../../features/auth/screens/language_selection_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
-import '../../features/dashboard/screens/home_screen.dart';
+import '../../features/auth/screens/signup_screen.dart'; // Ensure Signup is here
+import '../../features/auth/screens/otp_screen.dart';
+import '../../features/auth/screens/onboarding_personal_screen.dart';
+import '../../features/auth/screens/onboarding_address_screen.dart';
 
-// ✅ NEW IMPORTS: Crop Management & Funds Screens
+// --- YOUR SCREENS (Dashboard) ---
+import '../../features/dashboard/screens/home_screen.dart';
+import '../../features/dashboard/screens/profile_screen.dart'; // ✅ This import is now used below
 import '../../features/crop_management/screens/crop_list_screen.dart';
 import '../../features/crop_management/screens/add_crop_screen.dart';
 import '../../features/funds/screens/request_funds_screen.dart';
 
 class AppRoutes {
-  // ===========================================================================
-  // 1. ROUTE NAMES (Constants)
-  // ===========================================================================
-  
+  // --- Route Names ---
   static const String splash = '/';
   static const String languageSelection = '/language';
   static const String login = '/login';
+  static const String signup = '/signup';
   static const String otp = '/otp';
-  
-  // Onboarding Flow
   static const String onboardingPersonal = '/onboarding_personal';
   static const String onboardingAddress = '/onboarding_address';
   static const String bankVerification = '/bank_verification';
-  
-  // Dashboard
-  static const String dashboard = '/dashboard';
 
-  // ✅ MISSING ROUTES (Added these back)
+  static const String dashboard = '/dashboard';
+  static const String profile = '/profile'; // ✅ ADDED PROFILE ROUTE NAME
   static const String cropList = '/crop_list';
   static const String addCrop = '/add_crop';
   static const String requestFunds = '/request_funds';
 
-  // ===========================================================================
-  // 2. ROUTE MAP
-  // ===========================================================================
+  // --- Route Map ---
   static Map<String, WidgetBuilder> get routes => {
-    // --- Entry Point ---
-    splash: (context) => const LoginScreen(),
-    
-    // --- Partner's Routes (Auth) ---
+    splash: (context) => const SplashScreen(),
+    languageSelection: (context) => const LanguageSelectionScreen(),
     login: (context) => const LoginScreen(),
-    
-    // --- Your Routes (Dashboard) ---
+    signup: (context) => const SignUpScreen(),
+    otp: (context) => const OtpScreen(),
+    onboardingPersonal: (context) => const OnboardingPersonalScreen(),
+    onboardingAddress: (context) => const OnboardingAddressScreen(),
+
     dashboard: (context) => const HomeScreen(),
-    
-    // ✅ FEATURE ROUTES (This fixes the errors)
+    profile: (context) => const ProfileScreen(), // ✅ ADDED PROFILE WIDGET
     cropList: (context) => const CropListScreen(),
     addCrop: (context) => const AddCropScreen(),
     requestFunds: (context) => const RequestFundsScreen(),
