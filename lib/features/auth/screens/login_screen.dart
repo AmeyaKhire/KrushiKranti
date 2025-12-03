@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
       "phoneError": "कृपया 10 अंकों का मान्य मोबाइल नंबर दर्ज करें"
     },
     "mr": {
-      "tagline": "चांगुलपणाशी\nपुन्हा जोडले जा",
+      "tagline": "चांगुलपणाशी पुन्हा जोडले जा",
       "start": "चला सुरुवात करूया",
       "phoneHint": "आपला मोबाईल नंबर",
       "otpInfo": "OTP या नंबरवर पाठविला जाईल",

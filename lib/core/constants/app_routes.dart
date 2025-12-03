@@ -4,9 +4,11 @@ import 'package:krushikranti_farmer/features/auth/screens/signup_screen.dart';
 // Screens
 import 'package:krushikranti_farmer/features/auth/screens/splash_screen.dart';
 import 'package:krushikranti_farmer/features/auth/screens/language_selection_screen.dart';
-import 'package:krushikranti_farmer/features/dashboard/screens/home_screen.dart';
+//import 'package:krushikranti_farmer/features/dashboard/screens/home_screen.dart';
 import 'package:krushikranti_farmer/features/auth/screens/login_screen.dart';
 import 'package:krushikranti_farmer/features/auth/screens/otp_screen.dart';
+import 'package:krushikranti_farmer/features/auth/screens/onboarding_personal_screen.dart';
+import 'package:krushikranti_farmer/features/auth/screens/onboarding_address_screen.dart';
 
 class AppRoutes {
   // ================================
@@ -35,13 +37,13 @@ class AppRoutes {
         login: (context) => const LoginScreen(),
         signup: (context) => const SignUpScreen(),
         otp: (context) => const OtpScreen(),
+        onboardingPersonal: (context) => const OnboardingPersonalScreen(),
+        onboardingAddress: (context) => const OnboardingAddressScreen(),
 
         // Future onboarding screens will go here...
-         
-        // onboardingPersonal: (context) => const PersonalDetailsScreen(),
-        // onboardingAddress: (context) => const AddressDetailsScreen(),
+
         // bankVerification: (context) => const BankVerificationScreen(),
 
-        dashboard: (context) => const HomeScreen(),
+        // dashboard: (context) => const HomeScreen(),
       };
 }
