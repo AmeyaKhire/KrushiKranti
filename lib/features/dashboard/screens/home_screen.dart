@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../dashboard/services/crop_service.dart';
+import 'profile_screen.dart'; // ✅ IMPORT PROFILE SCREEN
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -304,8 +305,8 @@ class _HomeScreenState extends State<HomeScreen> {
         "icon": Icons.grass, 
         "title": "Crop Detail", 
         "route": AppRoutes.cropList,
-        "status": cropStatus, 
-        "statusColor": cropStatusColor 
+        "status": cropStatus, // Dynamic Status
+        "statusColor": cropStatusColor // Dynamic Color
       },
       {
         "icon": Icons.bar_chart, 
@@ -346,8 +347,8 @@ class _HomeScreenState extends State<HomeScreen> {
           items[index]['icon'] as IconData,
           items[index]['title'] as String,
           items[index]['route'] as String?,
-          items[index]['status'] as String,
-          items[index]['statusColor'] as Color,
+          items[index]['status'] as String,      // Pass Status Text
+          items[index]['statusColor'] as Color,  // Pass Status Color
         );
       },
     );
@@ -463,7 +464,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         const SizedBox(width: 12),
 
-        // ✅ AI BUTTON (Updated Padding)
+        // ✅ AI BUTTON
         GestureDetector(
           onTap: () {
             // TODO: Navigate to ThynkChat
@@ -546,7 +547,17 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           _buildNavItem(Icons.shopping_basket, "Orders", false),
-          _buildNavItem(Icons.person_outline_rounded, "Profile", false),
+          
+          // ✅ CONNECTED PROFILE SCREEN
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+            child: _buildNavItem(Icons.person_outline_rounded, "Profile", false),
+          ),
         ],
       ),
     );

@@ -90,7 +90,7 @@ class KrushiKrantiApp extends StatelessWidget {
       ],
 
       // --- 🚀 NAVIGATION SETUP ---
-      initialRoute: AppRoutes.splash, 
+      initialRoute: AppRoutes.dashboard, 
       routes: AppRoutes.routes,
     );
   }
