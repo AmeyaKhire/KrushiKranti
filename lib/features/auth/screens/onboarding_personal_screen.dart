@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:krushikranti_farmer/core/constants/app_colors.dart';
 import 'package:krushikranti_farmer/core/constants/app_routes.dart';
-import 'package:krushikranti_farmer/core/services/storage_service.dart';
+import 'package:krushikranti_farmer/core/services/storage_service.dart'; // ✅ Import Storage
 
 class OnboardingPersonalScreen extends StatefulWidget {
   const OnboardingPersonalScreen({super.key});
@@ -44,6 +44,7 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
       "firstNameHint": "Enter First Name",
       "lastNameHint": "Enter Last Name",
       "continue": "Save & Continue",
+      "error": "Please enter your full name",
     },
     "hi": {
       "title": "ऑनबोर्डिंग",
@@ -52,6 +53,7 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
       "firstNameHint": "पहला नाम दर्ज करें",
       "lastNameHint": "अंतिम नाम दर्ज करें",
       "continue": "सेव करें और आगे बढ़ें",
+      "error": "कृपया अपना पूरा नाम दर्ज करें",
     },
     "mr": {
       "title": "ऑनबोर्डिंग",
@@ -60,6 +62,7 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
       "firstNameHint": "पहिले नाव टाका",
       "lastNameHint": "आडनाव टाका",
       "continue": "जतन करा आणि पुढे चला",
+      "error": "कृपया आपले पूर्ण नाव प्रविष्ट करा",
     }
   };
 
@@ -79,6 +82,32 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
         });
       }
     }
+  }
+
+  // ✅ NEW: SAVE DATA FUNCTION
+  Future<void> _saveAndContinue() async {
+    // 1. Validation
+    if (firstNameController.text.trim().isEmpty || lastNameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(text[appLang]!["error"]!),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // 2. Save to Storage (Database)
+    await StorageService.savePersonalDetails(
+      firstName: firstNameController.text.trim(),
+      lastName: lastNameController.text.trim(),
+      // Pass the image path if it exists (only for Mobile for now)
+      profilePicPath: selectedImageFile?.path, 
+    );
+
+    // 3. Navigate
+    if (!mounted) return;
+    Navigator.pushNamed(context, AppRoutes.onboardingAddress);
   }
 
   @override
@@ -119,8 +148,7 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
                     const CircleAvatar(
                       radius: 14,
                       backgroundColor: Colors.green,
-                      child:
-                          Icon(Icons.check, color: Colors.white, size: 16),
+                      child: Icon(Icons.check, color: Colors.white, size: 16),
                     ),
                     Container(height: 2, width: 40, color: Colors.green),
 
@@ -128,8 +156,7 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
                     CircleAvatar(
                       radius: 14,
                       backgroundColor: Colors.grey.shade300,
-                      child:
-                          const Icon(Icons.check, color: Colors.white, size: 16),
+                      child: const Icon(Icons.check, color: Colors.white, size: 16),
                     ),
                   ],
                 ),
@@ -149,13 +176,10 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
                       ),
                       child: ClipOval(
                         child: selectedImageBytes != null
-                            ? Image.memory(selectedImageBytes!,
-                                fit: BoxFit.cover)
+                            ? Image.memory(selectedImageBytes!, fit: BoxFit.cover)
                             : selectedImageFile != null
-                                ? Image.file(selectedImageFile!,
-                                    fit: BoxFit.cover)
-                                : const Icon(Icons.camera_alt,
-                                    color: Colors.green, size: 40),
+                                ? Image.file(selectedImageFile!, fit: BoxFit.cover)
+                                : const Icon(Icons.camera_alt, color: Colors.green, size: 40),
                       ),
                     ),
                   ),
@@ -166,8 +190,7 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
                 // -------- FIRST NAME --------
                 Text(
                   text[appLang]!["firstName"]!,
-                  style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 5),
                 _inputField(
@@ -180,8 +203,7 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
                 // -------- LAST NAME --------
                 Text(
                   text[appLang]!["lastName"]!,
-                  style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 5),
                 _inputField(
@@ -203,14 +225,11 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.pushNamed(
-                          context, AppRoutes.onboardingAddress);
-                    },
+                    // ✅ CHANGED: Now calls the save function
+                    onPressed: _saveAndContinue, 
                     child: Text(
                       text[appLang]!["continue"]!,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

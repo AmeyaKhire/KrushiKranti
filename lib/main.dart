@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:google_fonts/google_fonts.dart'; 
-import 'l10n/app_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart'; // ✅ REQUIRED: Provider Package
+
 import 'core/constants/app_colors.dart';
 import 'core/constants/app_routes.dart';
+import 'core/providers/locale_provider.dart'; // ✅ Import Provider
+import 'l10n/app_localizations.dart';
 
 void main() {
-  runApp(const KrushiKrantiApp());
+  runApp(
+    // ✅ WRAP APP WITH PROVIDER
+    ChangeNotifierProvider(
+      create: (context) => LocaleProvider()..loadSavedLocale(),
+      child: const KrushiKrantiApp(),
+    ),
+  );
 }
 
 class KrushiKrantiApp extends StatelessWidget {
@@ -14,69 +23,24 @@ class KrushiKrantiApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ✅ LISTEN TO LANGUAGE CHANGES
+    final provider = Provider.of<LocaleProvider>(context);
+
     return MaterialApp(
       title: 'Krushi Kranti',
       debugShowCheckedModeBanner: false,
       
-      // --- 🎨 DESIGN SYSTEM ---
+      // --- THEME ---
       theme: ThemeData(
         useMaterial3: true,
-        // We set the Scaffold background here, which is perfectly valid.
         scaffoldBackgroundColor: AppColors.background,
-        
-        // 1. Color Scheme
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.brandGreen, 
-          primary: AppColors.primary,      
-          secondary: AppColors.brandGreen, 
-          surface: AppColors.surface, 
-          // ❌ REMOVED: background: AppColors.background (Deprecated)
-          // Material 3 uses 'surface' for backgrounds now.
-        ),
-        
-        // 2. Fonts (Noto Sans)
-        textTheme: GoogleFonts.notoSansTextTheme(
-          Theme.of(context).textTheme.apply(
-            bodyColor: AppColors.textPrimary,
-            displayColor: AppColors.textPrimary,
-          ),
-        ),
-        
-        // 3. Button Style (Yellow with Black Text)
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary, 
-            foregroundColor: AppColors.textOnButton, 
-            elevation: 0, 
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12), 
-            ),
-            textStyle: const TextStyle(
-              fontSize: 16, 
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        
-        // 4. Input Fields
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: const Color(0xFFF5F5F5), 
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none, 
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.brandGreen, width: 2),
-          ),
-          hintStyle: const TextStyle(color: AppColors.textSecondary),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.brandGreen),
+        textTheme: GoogleFonts.poppinsTextTheme(), 
       ),
 
-      // --- LOCALIZATION ---
+      // --- DYNAMIC LOCALIZATION ---
+      locale: provider.locale, // ✅ This switches the language instantly!
+      
       supportedLocales: const [
         Locale('en'), 
         Locale('hi'), 
@@ -89,7 +53,7 @@ class KrushiKrantiApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
 
-      // --- 🚀 NAVIGATION SETUP ---
+      // --- NAVIGATION ---
       initialRoute: AppRoutes.splash, 
       routes: AppRoutes.routes,
     );

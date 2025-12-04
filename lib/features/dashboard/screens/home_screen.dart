@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../l10n/app_localizations.dart'; // ✅ Import Generated Translations
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../dashboard/services/crop_service.dart';
-import 'profile_screen.dart'; // ✅ IMPORT PROFILE SCREEN
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,16 +14,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Logic: Default is false (Green Banner). If crops exist -> true (White Agent Card).
   bool isAgentAssigned = false; 
 
   @override
   void initState() {
     super.initState();
-    _checkAgentStatus(); // Check immediately when app starts
+    _checkAgentStatus(); 
   }
 
-  // ✅ LOGIC: Checks if user has added crops to toggle the banner AND Grid Status
   Future<void> _checkAgentStatus() async {
     final crops = await CropService.getCrops();
     if (mounted) {
@@ -34,6 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ✅ Shortcut to access translations
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       
@@ -44,11 +46,11 @@ class _HomeScreenState extends State<HomeScreen> {
         automaticallyImplyLeading: false, 
         titleSpacing: 24,
         title: Text(
-          "KrushiKranti",
+          l10n.krushiKranti, // ✅ Translated Brand Name
           style: GoogleFonts.poppins(
             color: AppColors.brandGreen,
-            fontSize: 32, // Matches Figma Size
-            fontWeight: FontWeight.w700, // Matches Figma Bold
+            fontSize: 32, 
+            fontWeight: FontWeight.w700, 
             height: 1.0, 
             letterSpacing: -0.5,
           ),
@@ -69,20 +71,20 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             
             // A. Weather
-            _buildWeatherHeader(),
+            _buildWeatherHeader(l10n), // Pass translations
             const SizedBox(height: 24),
 
-            // B. Banner (Dynamic Switch)
+            // B. Banner
             if (isAgentAssigned) 
-              _buildAgentAssignedCard()
+              _buildAgentAssignedCard(l10n)
             else 
-              _buildAgentPendingBanner(),
+              _buildAgentPendingBanner(l10n),
             
             const SizedBox(height: 28),
 
             // C. Quick Action Title
             Text(
-              "Quick Action",
+              l10n.quickAction, // ✅ Translated "Quick Action"
               style: GoogleFonts.poppins(
                 fontSize: 20, 
                 fontWeight: FontWeight.w700, 
@@ -92,13 +94,13 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16),
 
             // D. Grid
-            _buildQuickActionGrid(context),
+            _buildQuickActionGrid(context, l10n),
             
             const SizedBox(height: 28),
 
             // E. Alerts
             Text(
-              "Alerts",
+              l10n.alerts, // ✅ Translated "Alerts"
               style: GoogleFonts.poppins(
                 fontSize: 20, 
                 fontWeight: FontWeight.w700,
@@ -112,8 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       
-      // --- 3. BOTTOM NAVIGATION (Inline) ---
-      bottomNavigationBar: _buildBottomNavBar(context),
+      // --- 3. BOTTOM NAVIGATION ---
+      bottomNavigationBar: _buildBottomNavBar(context, l10n),
     );
   }
 
@@ -134,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildWeatherHeader() {
+  Widget _buildWeatherHeader(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
@@ -143,72 +145,82 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center, // Vertically center everything
         children: [
-          // LEFT SIDE
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Hello Ramesh,", 
-                style: GoogleFonts.poppins(
-                  fontSize: 18, 
-                  fontWeight: FontWeight.w700, 
-                  color: AppColors.brandGreen,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Text(
-                    "Current Location ", 
-                    style: GoogleFonts.poppins(
-                      color: AppColors.textPrimary, 
-                      fontWeight: FontWeight.w500, 
-                      fontSize: 12
-                    ),
+          // LEFT SIDE: Greeting & Location (Wrapped in Expanded to prevent overflow)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min, // Hug content
+              children: [
+                Text(
+                  "${l10n.hello} Ramesh,", 
+                  style: GoogleFonts.poppins(
+                    fontSize: 18, 
+                    fontWeight: FontWeight.w700, // Bold but not too heavy
+                    color: AppColors.brandGreen,
+                    height: 1.2,
                   ),
-                  const Icon(Icons.location_on, size: 14, color: AppColors.textPrimary),
-                ],
-              ),
-            ],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        l10n.currentLocation, 
+                        style: GoogleFonts.poppins(
+                          color: AppColors.textPrimary, 
+                          fontWeight: FontWeight.w500, 
+                          fontSize: 12
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.location_on, size: 14, color: AppColors.textPrimary),
+                  ],
+                ),
+              ],
+            ),
           ),
-          // RIGHT SIDE
+
+          // RIGHT SIDE: Temp Column + Cloud Icon
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Column for Temp & High/Low text
               Column(
-                crossAxisAlignment: CrossAxisAlignment.end, 
+                crossAxisAlignment: CrossAxisAlignment.end, // Align text to the right
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     "28°", 
                     style: GoogleFonts.poppins(
-                      fontSize: 32, 
+                      fontSize: 32, // Reduced slightly from 36 for better balance
                       fontWeight: FontWeight.w700, 
                       color: AppColors.textPrimary,
                       height: 1.0,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 4),
+                  // Combined High/Low into one clean line
                   Text(
-                    "High: 30 /", 
+                    "High: 30° / Low: 15°", 
                     style: GoogleFonts.poppins(
                       fontSize: 10, 
-                      color: Colors.grey, 
-                      fontWeight: FontWeight.w600
-                    ),
-                  ),
-                  Text(
-                    "Low: 15", 
-                    style: GoogleFonts.poppins(
-                      fontSize: 10, 
-                      color: Colors.grey, 
+                      color: Colors.grey.shade700, 
                       fontWeight: FontWeight.w600
                     ),
                   ),
                 ],
               ),
-              const SizedBox(width: 12), 
-              const Icon(Icons.cloud, size: 54, color: Color(0xFF29B6F6)), 
+              const SizedBox(width: 12), // Space between text and cloud
+              
+              // Cloud Icon
+              const Icon(Icons.cloud, size: 48, color: Color(0xFF29B6F6)), 
             ],
           ),
         ],
@@ -216,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAgentPendingBanner() {
+  Widget _buildAgentPendingBanner(AppLocalizations l10n) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 20),
@@ -238,12 +250,12 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           Text(
-            "We'll assign",
+            l10n.assignMsg, // ✅ Translated
             style: GoogleFonts.poppins(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 4),
           Text(
-            "KrushiTadnya Soon !",
+            l10n.soonMsg, // ✅ Translated
             style: GoogleFonts.poppins(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
           ),
         ],
@@ -251,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAgentAssignedCard() {
+  Widget _buildAgentAssignedCard(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -273,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Your assigned Krushi Tadnya", style: GoogleFonts.poppins(fontSize: 11, color: Colors.black54, fontWeight: FontWeight.bold)),
+                Text(l10n.assignedMsg, style: GoogleFonts.poppins(fontSize: 11, color: Colors.black54, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
                 Text("Jitendra Pawar", style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w700)),
                 Text("Pune Main Branch\nFertilizer Adviser", style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.w500)),
@@ -295,38 +307,37 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildQuickActionGrid(BuildContext context) {
-    // ✅ LOGIC: Change text/color based on 'isAgentAssigned'
-    final String cropStatus = isAgentAssigned ? "Active" : "Pending";
+  Widget _buildQuickActionGrid(BuildContext context, AppLocalizations l10n) {
+    final String cropStatus = isAgentAssigned ? l10n.active : l10n.pending; // ✅ Translated Status
     final Color cropStatusColor = isAgentAssigned ? AppColors.brandGreen : AppColors.pendingStatus;
 
     final items = [
       {
         "icon": Icons.grass, 
-        "title": "Crop Detail", 
+        "title": l10n.cropDetail, // ✅ Translated
         "route": AppRoutes.cropList,
-        "status": cropStatus, // Dynamic Status
-        "statusColor": cropStatusColor // Dynamic Color
+        "status": cropStatus, 
+        "statusColor": cropStatusColor 
       },
       {
         "icon": Icons.bar_chart, 
-        "title": "Daily Produce Sale Entry", 
+        "title": l10n.dailySale, // ✅ Translated
         "route": null,
-        "status": "Pending",
+        "status": l10n.pending,
         "statusColor": AppColors.pendingStatus
       },
       {
         "icon": Icons.monetization_on_outlined, 
-        "title": "Funding Request", 
+        "title": l10n.funding, // ✅ Translated
         "route": AppRoutes.requestFunds,
-        "status": "Pending",
+        "status": l10n.pending,
         "statusColor": AppColors.pendingStatus
       },
       {
         "icon": Icons.account_balance_wallet_outlined, 
-        "title": "Account Balance & Settlement", 
+        "title": l10n.account, // ✅ Translated
         "route": null,
-        "status": "Pending",
+        "status": l10n.pending,
         "statusColor": AppColors.pendingStatus
       },
     ];
@@ -347,8 +358,8 @@ class _HomeScreenState extends State<HomeScreen> {
           items[index]['icon'] as IconData,
           items[index]['title'] as String,
           items[index]['route'] as String?,
-          items[index]['status'] as String,      // Pass Status Text
-          items[index]['statusColor'] as Color,  // Pass Status Color
+          items[index]['status'] as String,
+          items[index]['statusColor'] as Color,
         );
       },
     );
@@ -365,7 +376,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: () async {
         if (route != null) {
-          // ✅ Wait for result, then check status again
           await Navigator.pushNamed(context, route);
           _checkAgentStatus(); 
         }
@@ -464,7 +474,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
         const SizedBox(width: 12),
 
-        // ✅ AI BUTTON
         GestureDetector(
           onTap: () {
             // TODO: Navigate to ThynkChat
@@ -472,7 +481,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Container(
             width: 64, 
             height: 64,
-            padding: const EdgeInsets.all(8), // Reduced padding = Bigger Logo
+            padding: const EdgeInsets.all(8), 
             decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
@@ -496,7 +505,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // --- 3. BOTTOM NAVIGATION ---
-  Widget _buildBottomNavBar(BuildContext context) {
+  Widget _buildBottomNavBar(BuildContext context, AppLocalizations l10n) {
     return Container(
       height: 90, 
       padding: const EdgeInsets.only(bottom: 20),
@@ -514,14 +523,14 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _buildNavItem(Icons.home_filled, "Home", true),
+          _buildNavItem(Icons.home_filled, l10n.home, true), // ✅ Translated
           
           GestureDetector(
             onTap: () async {
               await Navigator.pushNamed(context, AppRoutes.cropList);
               _checkAgentStatus();
             },
-            child: _buildNavItem(Icons.grass, "Crops", false), 
+            child: _buildNavItem(Icons.grass, l10n.crops, false), // ✅ Translated
           ),
           
           GestureDetector(
@@ -535,7 +544,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const Icon(Icons.add, color: AppColors.brandGreen, size: 36),
                 const SizedBox(height: 4),
                 Text(
-                  "Sell", 
+                  l10n.sell, // ✅ Translated
                   style: GoogleFonts.poppins(
                     fontSize: 13, 
                     fontWeight: FontWeight.w700,
@@ -546,9 +555,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          _buildNavItem(Icons.shopping_basket, "Orders", false),
+          _buildNavItem(Icons.shopping_basket, l10n.orders, false), // ✅ Translated
           
-          // ✅ CONNECTED PROFILE SCREEN
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -556,7 +564,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(builder: (context) => const ProfileScreen()),
               );
             },
-            child: _buildNavItem(Icons.person_outline_rounded, "Profile", false),
+            child: _buildNavItem(Icons.person_outline_rounded, l10n.profile, false), // ✅ Translated
           ),
         ],
       ),

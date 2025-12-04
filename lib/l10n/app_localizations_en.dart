@@ -9,5 +9,183 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get welcome => 'Welcome to Krushi Kranti';
+  String get krushiKranti => 'KrushiKranti';
+
+  @override
+  String get hello => 'Hello';
+
+  @override
+  String get currentLocation => 'Current Location';
+
+  @override
+  String get assignMsg => 'We\'ll assign';
+
+  @override
+  String get soonMsg => 'KrushiTadnya Soon !';
+
+  @override
+  String get assignedMsg => 'Your assigned Krushi Tadnya';
+
+  @override
+  String get quickAction => 'Quick Action';
+
+  @override
+  String get alerts => 'Alerts';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get cropDetail => 'Crop Detail';
+
+  @override
+  String get dailySale => 'Daily Produce Sale Entry';
+
+  @override
+  String get funding => 'Funding Request';
+
+  @override
+  String get account => 'Account Balance & Settlement';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get crops => 'Crops';
+
+  @override
+  String get sell => 'Sell';
+
+  @override
+  String get orders => 'Orders';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get myDetails => 'My Details';
+
+  @override
+  String get farmDetails => 'Farm Details';
+
+  @override
+  String get finance => 'Finance';
+
+  @override
+  String get subscription => 'Subscription';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get help => 'Help';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get logout => 'Log Out';
+
+  @override
+  String get addNewCrop => 'Add New Crop';
+
+  @override
+  String get selectCategory => 'Select Category';
+
+  @override
+  String get categoryLabel => 'Category (Veg/Fruit/Grain)';
+
+  @override
+  String get selectCropName => 'Select Crop Name';
+
+  @override
+  String get cropNameLabel => 'Crop Name';
+
+  @override
+  String get landArea => 'Land Area';
+
+  @override
+  String get acresHint => 'How many acres?';
+
+  @override
+  String get acresSuffix => 'Acres';
+
+  @override
+  String get saveCropBtn => 'Save Crop Details';
+
+  @override
+  String get fillAllFields => 'Please fill all fields';
+
+  @override
+  String get cropAddedSuccess => 'Success! Crop Added.';
+
+  @override
+  String get catVeg => 'Vegetables';
+
+  @override
+  String get catFruit => 'Fruits';
+
+  @override
+  String get catGrain => 'Grains';
+
+  @override
+  String get myCropsTitle => 'My Crops';
+
+  @override
+  String get addCropBtn => 'Add Crop';
+
+  @override
+  String get noCropsAdded => 'No crops added yet';
+
+  @override
+  String get addCropsSubtitle =>
+      'Add your vegetables or fruits\nto start selling.';
+
+  @override
+  String get cropTomato => 'Tomato';
+
+  @override
+  String get cropOnion => 'Onion';
+
+  @override
+  String get cropPotato => 'Potato';
+
+  @override
+  String get cropCauliflower => 'Cauliflower';
+
+  @override
+  String get cropBrinjal => 'Brinjal';
+
+  @override
+  String get cropOkra => 'Okra';
+
+  @override
+  String get cropBanana => 'Banana';
+
+  @override
+  String get cropMango => 'Mango';
+
+  @override
+  String get cropPapaya => 'Papaya';
+
+  @override
+  String get cropPomegranate => 'Pomegranate';
+
+  @override
+  String get cropGrapes => 'Grapes';
+
+  @override
+  String get cropWheat => 'Wheat';
+
+  @override
+  String get cropRice => 'Rice';
+
+  @override
+  String get cropJowar => 'Jowar';
+
+  @override
+  String get cropBajra => 'Bajra';
 }

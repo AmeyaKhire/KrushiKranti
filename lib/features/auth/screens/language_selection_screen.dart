@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:krushikranti_farmer/core/constants/app_colors.dart';
-import 'package:krushikranti_farmer/core/constants/app_routes.dart';
-import 'package:krushikranti_farmer/core/services/storage_service.dart';
+import 'package:provider/provider.dart'; // ✅ Added Provider
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_routes.dart';
+import '../../../core/providers/locale_provider.dart'; // ✅ Added LocaleProvider
 
 class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -14,7 +15,6 @@ class LanguageSelectionScreen extends StatefulWidget {
 class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
   String selectedLang = "en"; // default
 
-  // Translation Map
   final Map<String, Map<String, String>> translations = {
     "en": {
       "title": "Choose Your Preferred Language",
@@ -52,6 +52,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                     "assets/images/logo/krushi_logo.png",
                     height: 240,
                     fit: BoxFit.contain,
+                    // Added error builder just in case image is missing
+                    errorBuilder: (context, error, stackTrace) => 
+                        const Icon(Icons.image, size: 100, color: Colors.grey),
                   ),
                 ),
 
@@ -90,13 +93,14 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () async {
-                      await StorageService.saveLanguage(selectedLang);
+                    onPressed: () {
+                      // ✅ UPDATED LOGIC:
+                      // 1. Tell Provider to change language globally
+                      // (This also saves it to StorageService automatically)
+                      context.read<LocaleProvider>().setLocale(Locale(selectedLang));
 
-                      if (!context.mounted) return;
-
-                      Navigator.of(context)
-                          .pushReplacementNamed(AppRoutes.login);
+                      // 2. Navigate to Login
+                      Navigator.of(context).pushReplacementNamed(AppRoutes.login);
                     },
                     child: Text(translations[selectedLang]!["btn"]!),
                   ),

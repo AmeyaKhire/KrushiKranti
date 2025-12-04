@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:krushikranti_farmer/core/constants/app_colors.dart';
-import 'package:krushikranti_farmer/core/constants/app_routes.dart';
-import 'package:krushikranti_farmer/core/services/storage_service.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_routes.dart';
+import '../../../core/services/storage_service.dart'; // ✅ Import Storage
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -21,7 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? passwordError;
   String? phoneError;
 
-  // 🌍 UI TRANSLATIONS
+  // 🌍 UI TRANSLATIONS (Kept exactly as you had them)
   final Map<String, Map<String, String>> translations = {
     "en": {
       "hey": "Hey,",
@@ -62,20 +62,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final Map<String, Map<String, String>> translationsErr = {
     "en": {
       "emailErr": "Enter a valid email address",
-      "passErr":
-          "Password must contain 8+ chars, A-Z, a-z, number & special character",
+      "passErr": "Password must contain 8+ chars, A-Z, a-z, number & special character",
       "phoneErr": "Enter a valid 10-digit phone number",
     },
     "hi": {
       "emailErr": "कृपया मान्य ई-मेल दर्ज करें",
-      "passErr":
-          "पासवर्ड में 8+ अक्षर, A-Z, a-z, संख्या और विशेष वर्ण शामिल होने चाहिए",
+      "passErr": "पासवर्ड में 8+ अक्षर, A-Z, a-z, संख्या और विशेष वर्ण शामिल होने चाहिए",
       "phoneErr": "कृपया 10 अंकों का मान्य फ़ोन नंबर दर्ज करें",
     },
     "mr": {
       "emailErr": "कृपया वैध ई-मेल पत्ता प्रविष्ट करा",
-      "passErr":
-          "पासवर्डमध्ये 8+ अक्षरे, A-Z, a-z, संख्या व विशेष चिन्ह असणे आवश्यक आहे",
+      "passErr": "पासवर्डमध्ये 8+ अक्षरे, A-Z, a-z, संख्या व विशेष चिन्ह असणे आवश्यक आहे",
       "phoneErr": "कृपया वैध 10 अंकी मोबाईल नंबर टाका",
     }
   };
@@ -103,12 +100,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   bool validatePassword(String password) {
-    final regex =
-        RegExp(r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#\$%\^&\*\-_]).{8,}$");
+    final regex = RegExp(r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#\$%\^&\*\-_]).{8,}$");
     return regex.hasMatch(password);
   }
 
-  void validateForm() {
+  // ✅ UPDATED: Async function to save data
+  Future<void> validateForm() async {
+    bool isValid = false;
+    
     setState(() {
       emailError = validateEmail(emailController.text.trim())
           ? null
@@ -122,10 +121,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ? null
           : translationsErr[appLang]!["phoneErr"];
 
-      if (emailError == null && passwordError == null && phoneError == null) {
-        Navigator.pushNamed(context, AppRoutes.otp);
-      }
+      // Check if valid
+      isValid = (emailError == null && passwordError == null && phoneError == null);
     });
+
+    if (isValid) {
+      // 1. ✅ SAVE Email & Phone (No Name here)
+      await StorageService.saveAuthDetails(
+        email: emailController.text.trim(),
+        phone: phoneController.text.trim(),
+      );
+
+      // 2. Save Mock Token (Simulate Login)
+      await StorageService.saveToken("mock_token_123");
+
+      // 3. Navigation
+      if (!mounted) return;
+      Navigator.pushNamed(context, AppRoutes.otp);
+    }
   }
 
   @override
@@ -213,6 +226,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
+                    // ✅ Call the updated function
                     onPressed: validateForm,
                     child: Text(
                       translations[appLang]!["getOtp"]!,
@@ -233,23 +247,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+  // (Keep helper widgets _label, _errorText, _inputField exactly as they were)
   Widget _label(String text) {
     return Text(
       text,
-      style: const TextStyle(
-        fontSize: 13,
-        color: AppColors.textSecondary,
-      ),
+      style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
     );
   }
 
   Widget _errorText(String msg) {
     return Padding(
       padding: const EdgeInsets.only(top: 4, left: 6),
-      child: Text(
-        msg,
-        style: const TextStyle(color: Colors.red, fontSize: 12),
-      ),
+      child: Text(msg, style: const TextStyle(color: Colors.red, fontSize: 12)),
     );
   }
 
