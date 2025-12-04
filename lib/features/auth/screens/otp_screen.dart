@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:krushikranti_farmer/core/constants/app_colors.dart';
-import 'package:krushikranti_farmer/core/constants/app_routes.dart';
-import 'package:krushikranti_farmer/core/services/storage_service.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_routes.dart';
+import '../../../core/services/storage_service.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -74,6 +74,39 @@ class _OtpScreenState extends State<OtpScreen> {
     super.dispose();
   }
 
+  // ✅ LOGIC: Verify and Navigate based on flow
+  void _submitOtp() {
+    // 1. Combine OTP from controllers
+    String otp = otpControllers.map((e) => e.text).join();
+    
+    if (otp.length < 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter full OTP")),
+      );
+      return;
+    }
+
+    // 2. Get 'isLogin' Flag passed from Login/Signup screen
+    // Default to false (Signup) if arguments are null
+    final bool isLogin = ModalRoute.of(context)?.settings.arguments as bool? ?? false;
+
+    // 3. Navigate
+    if (isLogin) {
+      // CASE A: User is Logging In -> Go to Dashboard
+      Navigator.pushNamedAndRemoveUntil(
+        context, 
+        AppRoutes.dashboard, 
+        (route) => false, // Clear back stack
+      );
+    } else {
+      // CASE B: User is Signing Up -> Go to Onboarding
+      Navigator.pushReplacementNamed(
+        context, 
+        AppRoutes.onboardingPersonal,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,15 +118,9 @@ class _OtpScreenState extends State<OtpScreen> {
             Positioned(
               top: 10,
               left: 10,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop(); // ALWAYS WORKS
-                },
-                child: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.black,
-                  size: 24,
-                ),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 24),
+                onPressed: () => Navigator.pop(context),
               ),
             ),
 
@@ -110,8 +137,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         color: Color(0xFF6EEB6E),
                         shape: BoxShape.circle,
                       ),
-                      child:
-                          const Icon(Icons.lock, size: 40, color: Colors.white),
+                      child: const Icon(Icons.lock, size: 40, color: Colors.white),
                     ),
                     const SizedBox(height: 20),
                     Text(
@@ -131,10 +157,13 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
                     ),
                     const SizedBox(height: 30),
+                    
+                    // OTP Input Row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(4, (i) => _otpBox(i)),
                     ),
+                    
                     const SizedBox(height: 10),
                     Text(
                       timerSeconds > 0
@@ -146,6 +175,8 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
                     ),
                     const SizedBox(height: 40),
+                    
+                    // SUBMIT BUTTON
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -157,10 +188,7 @@ class _OtpScreenState extends State<OtpScreen> {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                              context, AppRoutes.onboardingPersonal);
-                        },
+                        onPressed: _submitOtp, // ✅ Call logic function
                         child: Text(
                           submitButtonText[appLang]!,
                           style: const TextStyle(

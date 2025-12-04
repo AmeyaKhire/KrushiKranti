@@ -137,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       // 3. Navigation
       if (!mounted) return;
-      Navigator.pushNamed(context, AppRoutes.otp);
+      Navigator.pushNamed(context, AppRoutes.otp, arguments: false);
     }
   }
 

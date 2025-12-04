@@ -268,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             // ✅ FIX: Check if widget is still active before navigating
                             if (!mounted) return;
 
-                            Navigator.pushNamed(context, AppRoutes.otp);
+                            Navigator.pushNamed(context, AppRoutes.otp, arguments: true);
                           },
                           child: Text(
                             translations[appLang]!["otpBtn"]!,
