@@ -30,6 +30,11 @@
   "about": "आमच्याबद्दल",
   "logout": "लॉग आउट",
 
+  "myCropsTitle": "माझी पिके",
+  "addCropBtn": "पीक जोडा",
+  "noCropsAdded": "अद्याप पिके जोडलेली नाहीत",
+  "addCropsSubtitle": "विक्री सुरू करण्यासाठी\nतुमचा भाजीपाला किंवा फळे जोडा.",
+
   "addNewCrop": "नवीन पीक जोडा",
   "selectCategory": "श्रेणी निवडा",
   "categoryLabel": "श्रेणी (भाजीपाला/फळे/धान्य)",
@@ -46,11 +51,6 @@
   "catFruit": "फळे",
   "catGrain": "धान्य",
 
-  "myCropsTitle": "माझी पिके",
-  "addCropBtn": "पीक जोडा",
-  "noCropsAdded": "अद्याप पिके जोडलेली नाहीत",
-  "addCropsSubtitle": "विक्री सुरू करण्यासाठी\nतुमचा भाजीपाला किंवा फळे जोडा.",
-
   "cropTomato": "टोमॅटो",
   "cropOnion": "कांदा",
   "cropPotato": "बटाटा",
@@ -65,5 +65,30 @@
   "cropWheat": "गहू",
   "cropRice": "तांदूळ",
   "cropJowar": "ज्वारी",
-  "cropBajra": "बाजरी"
+  "cropBajra": "बाजरी",
+
+  "personalDetails": "वैयक्तिक तपशील",
+  "firstName": "पहिले नाव",
+  "lastName": "आडनाव",
+  "firstNameHint": "पहिले नाव टाका",
+  "lastNameHint": "आडनाव टाका",
+  "dob": "जन्म तारीख",
+  "dobHint": "तारीख निवडा",
+  "gender": "लिंग",
+  "genderHint": "लिंग निवडा",
+  "male": "पुरुष",
+  "female": "स्त्री",
+  "other": "इतर",
+  "continueBtn": "जतन करा आणि पुढे चला",
+  "errorFillAll": "कृपया सर्व माहिती भरा",
+
+  "contactDetails": "संपर्क तपशील",
+  "altPhone": "पर्यायी मोबाईल नंबर",
+  "altPhoneHint": "पर्यायी नंबर टाका",
+  "emailLabel": "नोंदणीकृत ईमेल",
+  "phoneLabel": "नोंदणीकृत मोबाईल",
+
+  "emailLoginLink": "ईमेल आणि पासवर्डने लॉग इन करा",
+  "welcomeBack": "पुन्हा स्वागत आहे!",
+  "emailLoginTitle": "ईमेलने लॉग इन करा"
 }

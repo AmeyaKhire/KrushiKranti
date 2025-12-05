@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
-import '../../../core/services/storage_service.dart'; // ✅ Import Storage
+import '../../../core/services/storage_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -11,23 +11,28 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  // ✅ ADDED: Username Controller
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
 
   String appLang = "en"; // default
 
+  String? usernameError; // ✅ ADDED: Username Error
   String? emailError;
   String? passwordError;
   String? phoneError;
 
-  // 🌍 UI TRANSLATIONS (Kept exactly as you had them)
+  // 🌍 UI TRANSLATIONS
   final Map<String, Map<String, String>> translations = {
     "en": {
       "hey": "Hey,",
       "signupNow": "Sign Up Now !",
-      "email": "E-Mail / Username",
-      "emailHint": "Enter e-mail address / Username",
+      "username": "Username",           // ✅ New
+      "usernameHint": "Enter username", // ✅ New
+      "email": "E-Mail",
+      "emailHint": "Enter e-mail address",
       "password": "Password",
       "passwordHint": "Enter password",
       "phone": "Phone Number",
@@ -37,8 +42,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     "hi": {
       "hey": "नमस्ते,",
       "signupNow": "अभी साइन अप करें !",
-      "email": "ई-मेल / उपयोगकर्ता नाम",
-      "emailHint": "ई-मेल / उपयोगकर्ता नाम दर्ज करें",
+      "username": "उपयोगकर्ता नाम",           // ✅ New
+      "usernameHint": "उपयोगकर्ता नाम दर्ज करें", // ✅ New
+      "email": "ई-मेल",
+      "emailHint": "ई-मेल दर्ज करें",
       "password": "पासवर्ड",
       "passwordHint": "पासवर्ड दर्ज करें",
       "phone": "फोन नंबर",
@@ -48,8 +55,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     "mr": {
       "hey": "नमस्कार,",
       "signupNow": "आता साइन अप करा !",
-      "email": "ई-मेल / वापरकर्तानाव",
-      "emailHint": "ई-मेल / वापरकर्तानाव टाका",
+      "username": "वापरकर्तानाव",           // ✅ New
+      "usernameHint": "वापरकर्तानाव टाका",   // ✅ New
+      "email": "ई-मेल",
+      "emailHint": "ई-मेल टाका",
       "password": "पासवर्ड",
       "passwordHint": "पासवर्ड टाका",
       "phone": "फोन नंबर",
@@ -61,16 +70,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // 🌍 ERROR TRANSLATIONS
   final Map<String, Map<String, String>> translationsErr = {
     "en": {
+      "usernameErr": "Please enter a username", // ✅ New
       "emailErr": "Enter a valid email address",
       "passErr": "Password must contain 8+ chars, A-Z, a-z, number & special character",
       "phoneErr": "Enter a valid 10-digit phone number",
     },
     "hi": {
+      "usernameErr": "कृपया उपयोगकर्ता नाम दर्ज करें", // ✅ New
       "emailErr": "कृपया मान्य ई-मेल दर्ज करें",
       "passErr": "पासवर्ड में 8+ अक्षर, A-Z, a-z, संख्या और विशेष वर्ण शामिल होने चाहिए",
       "phoneErr": "कृपया 10 अंकों का मान्य फ़ोन नंबर दर्ज करें",
     },
     "mr": {
+      "usernameErr": "कृपया वापरकर्तानाव प्रविष्ट करा", // ✅ New
       "emailErr": "कृपया वैध ई-मेल पत्ता प्रविष्ट करा",
       "passErr": "पासवर्डमध्ये 8+ अक्षरे, A-Z, a-z, संख्या व विशेष चिन्ह असणे आवश्यक आहे",
       "phoneErr": "कृपया वैध 10 अंकी मोबाईल नंबर टाका",
@@ -89,6 +101,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   // VALIDATIONS
+  bool validateUsername(String name) {
+    return name.trim().length >= 3; // Simple check
+  }
+
   bool validateEmail(String email) {
     final regex = RegExp(r"^[\w\.-]+@[\w\.-]+\.\w+$");
     return regex.hasMatch(email);
@@ -106,9 +122,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   // ✅ UPDATED: Async function to save data
   Future<void> validateForm() async {
-    bool isValid = false;
-    
     setState(() {
+      usernameError = validateUsername(usernameController.text)
+          ? null
+          : translationsErr[appLang]!["usernameErr"];
+
       emailError = validateEmail(emailController.text.trim())
           ? null
           : translationsErr[appLang]!["emailErr"];
@@ -120,23 +138,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
       phoneError = validatePhone(phoneController.text.trim())
           ? null
           : translationsErr[appLang]!["phoneErr"];
-
-      // Check if valid
-      isValid = (emailError == null && passwordError == null && phoneError == null);
     });
 
-    if (isValid) {
-      // 1. ✅ SAVE Email & Phone (No Name here)
+    if (usernameError == null && 
+        emailError == null && 
+        passwordError == null && 
+        phoneError == null) {
+      
+      // 1. Save Auth Details (Email/Phone)
       await StorageService.saveAuthDetails(
         email: emailController.text.trim(),
         phone: phoneController.text.trim(),
       );
 
-      // 2. Save Mock Token (Simulate Login)
+      // 2. Save Username as First Name initially (so Profile isn't empty)
+      // We pass empty strings for DOB/Gender as placeholders
+      await StorageService.savePersonalDetails(
+        firstName: usernameController.text.trim(),
+        lastName: "", 
+        dob: "", 
+        gender: "",
+        profilePicPath: null,
+      );
+
+      // 3. Save Mock Token
       await StorageService.saveToken("mock_token_123");
 
-      // 3. Navigation
       if (!mounted) return;
+      
+      // 4. Navigate to OTP (Pass 'false' because this is Signup)
       Navigator.pushNamed(context, AppRoutes.otp, arguments: false);
     }
   }
@@ -180,7 +210,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 const SizedBox(height: 40),
 
-                // EMAIL FIELD
+                // --- 1. USERNAME FIELD (ADDED BACK) ---
+                _label(translations[appLang]!["username"]!),
+                _inputField(
+                  controller: usernameController,
+                  hint: translations[appLang]!["usernameHint"]!,
+                  icon: Icons.person_outline,
+                ),
+                if (usernameError != null) _errorText(usernameError!),
+
+                const SizedBox(height: 20),
+
+                // --- 2. EMAIL FIELD ---
                 _label(translations[appLang]!["email"]!),
                 _inputField(
                   controller: emailController,
@@ -191,7 +232,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 const SizedBox(height: 20),
 
-                // PASSWORD FIELD
+                // --- 3. PASSWORD FIELD ---
                 _label(translations[appLang]!["password"]!),
                 _inputField(
                   controller: passwordController,
@@ -203,7 +244,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 const SizedBox(height: 20),
 
-                // PHONE FIELD
+                // --- 4. PHONE FIELD ---
                 _label(translations[appLang]!["phone"]!),
                 _inputField(
                   controller: phoneController,
@@ -215,6 +256,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 const SizedBox(height: 40),
 
+                // SUBMIT BUTTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -226,8 +268,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    // ✅ Call the updated function
-                    onPressed: validateForm,
+                    onPressed: validateForm, // ✅ Calls updated validation
                     child: Text(
                       translations[appLang]!["getOtp"]!,
                       style: const TextStyle(
@@ -247,18 +288,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  // (Keep helper widgets _label, _errorText, _inputField exactly as they were)
   Widget _label(String text) {
     return Text(
       text,
-      style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+      style: const TextStyle(
+        fontSize: 13,
+        color: AppColors.textSecondary,
+      ),
     );
   }
 
   Widget _errorText(String msg) {
     return Padding(
       padding: const EdgeInsets.only(top: 4, left: 6),
-      child: Text(msg, style: const TextStyle(color: Colors.red, fontSize: 12)),
+      child: Text(
+        msg,
+        style: const TextStyle(color: Colors.red, fontSize: 12),
+      ),
     );
   }
 
@@ -291,6 +337,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               onChanged: (_) {
                 setState(() {
+                  usernameError = null;
                   emailError = null;
                   passwordError = null;
                   phoneError = null;

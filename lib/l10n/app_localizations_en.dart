@@ -90,6 +90,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Log Out';
 
   @override
+  String get myCropsTitle => 'My Crops';
+
+  @override
+  String get addCropBtn => 'Add Crop';
+
+  @override
+  String get noCropsAdded => 'No crops added yet';
+
+  @override
+  String get addCropsSubtitle =>
+      'Add your vegetables or fruits\nto start selling.';
+
+  @override
   String get addNewCrop => 'Add New Crop';
 
   @override
@@ -130,19 +143,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get catGrain => 'Grains';
-
-  @override
-  String get myCropsTitle => 'My Crops';
-
-  @override
-  String get addCropBtn => 'Add Crop';
-
-  @override
-  String get noCropsAdded => 'No crops added yet';
-
-  @override
-  String get addCropsSubtitle =>
-      'Add your vegetables or fruits\nto start selling.';
 
   @override
   String get cropTomato => 'Tomato';
@@ -188,4 +188,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cropBajra => 'Bajra';
+
+  @override
+  String get personalDetails => 'Personal Details';
+
+  @override
+  String get firstName => 'First Name';
+
+  @override
+  String get lastName => 'Last Name';
+
+  @override
+  String get firstNameHint => 'Enter First Name';
+
+  @override
+  String get lastNameHint => 'Enter Last Name';
+
+  @override
+  String get dob => 'Date of Birth';
+
+  @override
+  String get dobHint => 'Select Date';
+
+  @override
+  String get gender => 'Gender';
+
+  @override
+  String get genderHint => 'Select Gender';
+
+  @override
+  String get male => 'Male';
+
+  @override
+  String get female => 'Female';
+
+  @override
+  String get other => 'Other';
+
+  @override
+  String get continueBtn => 'Save & Continue';
+
+  @override
+  String get errorFillAll => 'Please fill all details';
+
+  @override
+  String get contactDetails => 'Contact Details';
+
+  @override
+  String get altPhone => 'Alternate Mobile Number';
+
+  @override
+  String get altPhoneHint => 'Enter alternate number';
+
+  @override
+  String get emailLabel => 'Registered Email';
+
+  @override
+  String get phoneLabel => 'Registered Mobile';
+
+  @override
+  String get emailLoginLink => 'Log in with Email & Password';
+
+  @override
+  String get welcomeBack => 'Welcome Back!';
+
+  @override
+  String get emailLoginTitle => 'Log in with Email';
 }

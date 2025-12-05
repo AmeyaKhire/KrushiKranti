@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:krushikranti_farmer/core/constants/app_colors.dart';
-import 'package:krushikranti_farmer/core/constants/app_routes.dart';
-import 'package:krushikranti_farmer/core/services/storage_service.dart'; // ✅ Import Storage
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_routes.dart';
+import '../../../core/services/storage_service.dart';
 
 class OnboardingPersonalScreen extends StatefulWidget {
   const OnboardingPersonalScreen({super.key});
@@ -23,6 +23,8 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
 
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
+  final dobController = TextEditingController();
+  String? selectedGender;
 
   @override
   void initState() {
@@ -38,56 +40,101 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
   // ------------ LANGUAGE TEXT -------------
   final Map<String, Map<String, String>> text = {
     "en": {
-      "title": "Onboarding",
+      "title": "Personal Details",
       "firstName": "First Name",
       "lastName": "Last Name",
       "firstNameHint": "Enter First Name",
       "lastNameHint": "Enter Last Name",
+      "dob": "Date of Birth",
+      "dobHint": "DD/MM/YYYY",
+      "gender": "Gender",
+      "genderHint": "Select Gender",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
       "continue": "Save & Continue",
-      "error": "Please enter your full name",
+      "error": "Please fill all details",
     },
     "hi": {
-      "title": "ऑनबोर्डिंग",
+      "title": "व्यक्तिगत विवरण",
       "firstName": "पहला नाम",
       "lastName": "अंतिम नाम",
       "firstNameHint": "पहला नाम दर्ज करें",
       "lastNameHint": "अंतिम नाम दर्ज करें",
+      "dob": "जन्म तिथि",
+      "dobHint": "DD/MM/YYYY",
+      "gender": "लिंग",
+      "genderHint": "लिंग चुनें",
+      "male": "पुरुष",
+      "female": "महिला",
+      "other": "अन्य",
       "continue": "सेव करें और आगे बढ़ें",
-      "error": "कृपया अपना पूरा नाम दर्ज करें",
+      "error": "कृपया सभी विवरण भरें",
     },
     "mr": {
-      "title": "ऑनबोर्डिंग",
+      "title": "वैयक्तिक तपशील",
       "firstName": "पहिले नाव",
       "lastName": "आडनाव",
       "firstNameHint": "पहिले नाव टाका",
       "lastNameHint": "आडनाव टाका",
+      "dob": "जन्म तारीख",
+      "dobHint": "DD/MM/YYYY",
+      "gender": "लिंग",
+      "genderHint": "लिंग निवडा",
+      "male": "पुरुष",
+      "female": "स्त्री",
+      "other": "इतर",
       "continue": "जतन करा आणि पुढे चला",
-      "error": "कृपया आपले पूर्ण नाव प्रविष्ट करा",
+      "error": "कृपया सर्व माहिती भरा",
     }
   };
 
-  // ---------- CAMERA PICKER (WEB + MOBILE) ----------
+  // ---------- CAMERA PICKER ----------
   Future<void> pickImage() async {
     final XFile? file = await picker.pickImage(source: ImageSource.gallery);
-
     if (file != null) {
       if (kIsWeb) {
         final bytes = await file.readAsBytes();
-        setState(() {
-          selectedImageBytes = bytes;
-        });
+        setState(() => selectedImageBytes = bytes);
       } else {
-        setState(() {
-          selectedImageFile = File(file.path);
-        });
+        setState(() => selectedImageFile = File(file.path));
       }
     }
   }
 
-  // ✅ NEW: SAVE DATA FUNCTION
+  // ✅ DATE PICKER LOGIC
+  Future<void> _selectDate() async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(1995),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.brandGreen,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() {
+        dobController.text = "${picked.day}/${picked.month}/${picked.year}";
+      });
+    }
+  }
+
+  // ✅ SAVE DATA FUNCTION
   Future<void> _saveAndContinue() async {
-    // 1. Validation
-    if (firstNameController.text.trim().isEmpty || lastNameController.text.trim().isEmpty) {
+    if (firstNameController.text.trim().isEmpty ||
+        lastNameController.text.trim().isEmpty ||
+        dobController.text.isEmpty ||
+        selectedGender == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(text[appLang]!["error"]!),
@@ -97,17 +144,17 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
       return;
     }
 
-    // 2. Save to Storage (Database)
+    // Save to Storage
     await StorageService.savePersonalDetails(
       firstName: firstNameController.text.trim(),
       lastName: lastNameController.text.trim(),
-      // Pass the image path if it exists (only for Mobile for now)
-      profilePicPath: selectedImageFile?.path, 
+      dob: dobController.text.trim(),
+      gender: selectedGender!,
+      profilePicPath: selectedImageFile?.path,
     );
 
-    // 3. Navigate
     if (!mounted) return;
-    Navigator.pushNamed(context, AppRoutes.onboardingAddress);
+    Navigator.pushNamed(context, AppRoutes.onboardingContact);
   }
 
   @override
@@ -140,30 +187,67 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
 
                 const SizedBox(height: 10),
 
-                // ------------ 2-STEP INDICATOR -------------
+                // ✅ UPDATED STEPPER (1 Active, 2 & 3 Inactive)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Step 1 (Active)
+                    // Step 1: Active (Green "1")
                     const CircleAvatar(
                       radius: 14,
-                      backgroundColor: Colors.green,
-                      child: Icon(Icons.check, color: Colors.white, size: 16),
+                      backgroundColor: AppColors.brandGreen,
+                      child: Text(
+                        "1",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    Container(height: 2, width: 40, color: Colors.green),
+                    Container(
+                      width: 30,
+                      height: 2,
+                      color: Colors.grey.shade300,
+                    ), // Grey Line
 
-                    // Step 2 (Inactive)
+                    // Step 2: Inactive (Grey "2")
                     CircleAvatar(
                       radius: 14,
                       backgroundColor: Colors.grey.shade300,
-                      child: const Icon(Icons.check, color: Colors.white, size: 16),
+                      child: const Text(
+                        "2",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 30,
+                      height: 2,
+                      color: Colors.grey.shade300,
+                    ), // Grey Line
+
+                    // Step 3: Inactive (Grey "3")
+                    CircleAvatar(
+                      radius: 14,
+                      backgroundColor: Colors.grey.shade300,
+                      child: const Text(
+                        "3",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
 
                 const SizedBox(height: 30),
 
-                // -------- PROFILE IMAGE UPLOADER --------
+                // PROFILE IMAGE
                 Center(
                   child: GestureDetector(
                     onTap: pickImage,
@@ -172,14 +256,27 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
                       width: 140,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.green, width: 2),
+                        border: Border.all(
+                          color: AppColors.brandGreen,
+                          width: 2,
+                        ),
                       ),
                       child: ClipOval(
                         child: selectedImageBytes != null
-                            ? Image.memory(selectedImageBytes!, fit: BoxFit.cover)
+                            ? Image.memory(
+                                selectedImageBytes!,
+                                fit: BoxFit.cover,
+                              )
                             : selectedImageFile != null
-                                ? Image.file(selectedImageFile!, fit: BoxFit.cover)
-                                : const Icon(Icons.camera_alt, color: Colors.green, size: 40),
+                                ? Image.file(
+                                    selectedImageFile!,
+                                    fit: BoxFit.cover,
+                                  )
+                                : const Icon(
+                                    Icons.camera_alt,
+                                    color: AppColors.brandGreen,
+                                    size: 40,
+                                  ),
                       ),
                     ),
                   ),
@@ -187,11 +284,8 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
 
                 const SizedBox(height: 40),
 
-                // -------- FIRST NAME --------
-                Text(
-                  text[appLang]!["firstName"]!,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                ),
+                // 1. FIRST NAME
+                Text(text[appLang]!["firstName"]!, style: _labelStyle()),
                 const SizedBox(height: 5),
                 _inputField(
                   controller: firstNameController,
@@ -200,20 +294,75 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
 
                 const SizedBox(height: 20),
 
-                // -------- LAST NAME --------
-                Text(
-                  text[appLang]!["lastName"]!,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                ),
+                // 2. LAST NAME
+                Text(text[appLang]!["lastName"]!, style: _labelStyle()),
                 const SizedBox(height: 5),
                 _inputField(
                   controller: lastNameController,
                   hint: text[appLang]!["lastNameHint"]!,
                 ),
 
+                const SizedBox(height: 20),
+
+                // 3. DATE OF BIRTH (Clickable)
+                Text(text[appLang]!["dob"]!, style: _labelStyle()),
+                const SizedBox(height: 5),
+                GestureDetector(
+                  onTap: _selectDate,
+                  child: AbsorbPointer(
+                    child: _inputField(
+                      controller: dobController,
+                      hint: text[appLang]!["dobHint"]!,
+                      icon: Icons.calendar_month,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // 4. GENDER (Dropdown)
+                Text(text[appLang]!["gender"]!, style: _labelStyle()),
+                const SizedBox(height: 5),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.brandGreen, width: 1),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: selectedGender,
+                      hint: Text(
+                        text[appLang]!["genderHint"]!,
+                        style: TextStyle(color: Colors.grey.shade600),
+                      ),
+                      isExpanded: true,
+                      icon: const Icon(
+                        Icons.arrow_drop_down,
+                        color: AppColors.brandGreen,
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          value: "Male",
+                          child: Text(text[appLang]!["male"]!),
+                        ),
+                        DropdownMenuItem(
+                          value: "Female",
+                          child: Text(text[appLang]!["female"]!),
+                        ),
+                        DropdownMenuItem(
+                          value: "Other",
+                          child: Text(text[appLang]!["other"]!),
+                        ),
+                      ],
+                      onChanged: (val) => setState(() => selectedGender = val),
+                    ),
+                  ),
+                ),
+
                 const SizedBox(height: 40),
 
-                // -------- CONTINUE BUTTON --------
+                // SAVE BUTTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -225,11 +374,13 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    // ✅ CHANGED: Now calls the save function
-                    onPressed: _saveAndContinue, 
+                    onPressed: _saveAndContinue,
                     child: Text(
                       text[appLang]!["continue"]!,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -243,15 +394,18 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
     );
   }
 
-  // ---------- REUSABLE TEXT FIELD ----------
+  TextStyle _labelStyle() =>
+      const TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
+
   Widget _inputField({
     required TextEditingController controller,
     required String hint,
+    IconData? icon,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.green, width: 1),
+        border: Border.all(color: AppColors.brandGreen, width: 1),
         borderRadius: BorderRadius.circular(25),
       ),
       child: TextField(
@@ -259,6 +413,8 @@ class _OnboardingPersonalScreenState extends State<OnboardingPersonalScreen> {
         decoration: InputDecoration(
           hintText: hint,
           border: InputBorder.none,
+          suffixIcon:
+              icon != null ? Icon(icon, color: AppColors.brandGreen) : null,
         ),
       ),
     );

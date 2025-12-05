@@ -8,6 +8,8 @@ import '../../features/auth/screens/signup_screen.dart'; // Ensure Signup is her
 import '../../features/auth/screens/otp_screen.dart';
 import '../../features/auth/screens/onboarding_personal_screen.dart';
 import '../../features/auth/screens/onboarding_address_screen.dart';
+import '../../features/auth/screens/onboarding_contact_screen.dart';
+import '../../features/auth/screens/email_login_screen.dart';
 
 // --- YOUR SCREENS (Dashboard) ---
 import '../../features/dashboard/screens/home_screen.dart';
@@ -21,9 +23,11 @@ class AppRoutes {
   static const String splash = '/';
   static const String languageSelection = '/language';
   static const String login = '/login';
+  static const String emailLogin = '/email_login';
   static const String signup = '/signup';
   static const String otp = '/otp';
   static const String onboardingPersonal = '/onboarding_personal';
+  static const String onboardingContact = '/onboarding_contact';
   static const String onboardingAddress = '/onboarding_address';
   static const String bankVerification = '/bank_verification';
 
@@ -38,9 +42,11 @@ class AppRoutes {
     splash: (context) => const SplashScreen(),
     languageSelection: (context) => const LanguageSelectionScreen(),
     login: (context) => const LoginScreen(),
+    emailLogin: (context) => const EmailLoginScreen(),
     signup: (context) => const SignUpScreen(),
     otp: (context) => const OtpScreen(),
     onboardingPersonal: (context) => const OnboardingPersonalScreen(),
+    onboardingContact: (context) => const OnboardingContactScreen(),
     onboardingAddress: (context) => const OnboardingAddressScreen(),
 
     dashboard: (context) => const HomeScreen(),

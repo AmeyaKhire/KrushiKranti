@@ -262,6 +262,30 @@ abstract class AppLocalizations {
   /// **'Log Out'**
   String get logout;
 
+  /// No description provided for @myCropsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My Crops'**
+  String get myCropsTitle;
+
+  /// No description provided for @addCropBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Crop'**
+  String get addCropBtn;
+
+  /// No description provided for @noCropsAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'No crops added yet'**
+  String get noCropsAdded;
+
+  /// No description provided for @addCropsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your vegetables or fruits\nto start selling.'**
+  String get addCropsSubtitle;
+
   /// No description provided for @addNewCrop.
   ///
   /// In en, this message translates to:
@@ -345,30 +369,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Grains'**
   String get catGrain;
-
-  /// No description provided for @myCropsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'My Crops'**
-  String get myCropsTitle;
-
-  /// No description provided for @addCropBtn.
-  ///
-  /// In en, this message translates to:
-  /// **'Add Crop'**
-  String get addCropBtn;
-
-  /// No description provided for @noCropsAdded.
-  ///
-  /// In en, this message translates to:
-  /// **'No crops added yet'**
-  String get noCropsAdded;
-
-  /// No description provided for @addCropsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Add your vegetables or fruits\nto start selling.'**
-  String get addCropsSubtitle;
 
   /// No description provided for @cropTomato.
   ///
@@ -459,6 +459,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bajra'**
   String get cropBajra;
+
+  /// No description provided for @personalDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Details'**
+  String get personalDetails;
+
+  /// No description provided for @firstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstName;
+
+  /// No description provided for @lastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastName;
+
+  /// No description provided for @firstNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter First Name'**
+  String get firstNameHint;
+
+  /// No description provided for @lastNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Last Name'**
+  String get lastNameHint;
+
+  /// No description provided for @dob.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get dob;
+
+  /// No description provided for @dobHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Date'**
+  String get dobHint;
+
+  /// No description provided for @gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get gender;
+
+  /// No description provided for @genderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Gender'**
+  String get genderHint;
+
+  /// No description provided for @male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get male;
+
+  /// No description provided for @female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get female;
+
+  /// No description provided for @other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
+
+  /// No description provided for @continueBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & Continue'**
+  String get continueBtn;
+
+  /// No description provided for @errorFillAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill all details'**
+  String get errorFillAll;
+
+  /// No description provided for @contactDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Details'**
+  String get contactDetails;
+
+  /// No description provided for @altPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Alternate Mobile Number'**
+  String get altPhone;
+
+  /// No description provided for @altPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter alternate number'**
+  String get altPhoneHint;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered Email'**
+  String get emailLabel;
+
+  /// No description provided for @phoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered Mobile'**
+  String get phoneLabel;
+
+  /// No description provided for @emailLoginLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in with Email & Password'**
+  String get emailLoginLink;
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back!'**
+  String get welcomeBack;
+
+  /// No description provided for @emailLoginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in with Email'**
+  String get emailLoginTitle;
 }
 
 class _AppLocalizationsDelegate

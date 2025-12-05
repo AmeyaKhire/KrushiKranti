@@ -30,6 +30,11 @@
   "about": "About",
   "logout": "Log Out",
 
+  "myCropsTitle": "My Crops",
+  "addCropBtn": "Add Crop",
+  "noCropsAdded": "No crops added yet",
+  "addCropsSubtitle": "Add your vegetables or fruits\nto start selling.",
+
   "addNewCrop": "Add New Crop",
   "selectCategory": "Select Category",
   "categoryLabel": "Category (Veg/Fruit/Grain)",
@@ -46,11 +51,6 @@
   "catFruit": "Fruits",
   "catGrain": "Grains",
 
-  "myCropsTitle": "My Crops",
-  "addCropBtn": "Add Crop",
-  "noCropsAdded": "No crops added yet",
-  "addCropsSubtitle": "Add your vegetables or fruits\nto start selling.",
-
   "cropTomato": "Tomato",
   "cropOnion": "Onion",
   "cropPotato": "Potato",
@@ -65,6 +65,30 @@
   "cropWheat": "Wheat",
   "cropRice": "Rice",
   "cropJowar": "Jowar",
-  "cropBajra": "Bajra"
-}
+  "cropBajra": "Bajra",
 
+  "personalDetails": "Personal Details",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "firstNameHint": "Enter First Name",
+  "lastNameHint": "Enter Last Name",
+  "dob": "Date of Birth",
+  "dobHint": "Select Date",
+  "gender": "Gender",
+  "genderHint": "Select Gender",
+  "male": "Male",
+  "female": "Female",
+  "other": "Other",
+  "continueBtn": "Save & Continue",
+  "errorFillAll": "Please fill all details",
+
+  "contactDetails": "Contact Details",
+  "altPhone": "Alternate Mobile Number",
+  "altPhoneHint": "Enter alternate number",
+  "emailLabel": "Registered Email",
+  "phoneLabel": "Registered Mobile",
+
+  "emailLoginLink": "Log in with Email & Password",
+  "welcomeBack": "Welcome Back!",
+  "emailLoginTitle": "Log in with Email"
+}

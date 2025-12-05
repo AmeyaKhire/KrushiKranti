@@ -90,6 +90,19 @@ class AppLocalizationsHi extends AppLocalizations {
   String get logout => 'लॉग आउट';
 
   @override
+  String get myCropsTitle => 'मेरी फसलें';
+
+  @override
+  String get addCropBtn => 'फसल जोड़ें';
+
+  @override
+  String get noCropsAdded => 'अभी तक कोई फसल नहीं जोड़ी गई';
+
+  @override
+  String get addCropsSubtitle =>
+      'बेचना शुरू करने के लिए\nअपनी सब्जियां या फल जोड़ें।';
+
+  @override
   String get addNewCrop => 'नई फसल जोड़ें';
 
   @override
@@ -130,19 +143,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get catGrain => 'अनाज';
-
-  @override
-  String get myCropsTitle => 'मेरी फसलें';
-
-  @override
-  String get addCropBtn => 'फसल जोड़ें';
-
-  @override
-  String get noCropsAdded => 'अभी तक कोई फसल नहीं जोड़ी गई';
-
-  @override
-  String get addCropsSubtitle =>
-      'बेचना शुरू करने के लिए\nअपनी सब्जियां या फल जोड़ें।';
 
   @override
   String get cropTomato => 'टमाटर';
@@ -188,4 +188,70 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get cropBajra => 'बाजरा';
+
+  @override
+  String get personalDetails => 'व्यक्तिगत विवरण';
+
+  @override
+  String get firstName => 'पहला नाम';
+
+  @override
+  String get lastName => 'अंतिम नाम';
+
+  @override
+  String get firstNameHint => 'पहला नाम दर्ज करें';
+
+  @override
+  String get lastNameHint => 'अंतिम नाम दर्ज करें';
+
+  @override
+  String get dob => 'जन्म तिथि';
+
+  @override
+  String get dobHint => 'तारीख चुनें';
+
+  @override
+  String get gender => 'लिंग';
+
+  @override
+  String get genderHint => 'लिंग चुनें';
+
+  @override
+  String get male => 'पुरुष';
+
+  @override
+  String get female => 'महिला';
+
+  @override
+  String get other => 'अन्य';
+
+  @override
+  String get continueBtn => 'सहेजें और जारी रखें';
+
+  @override
+  String get errorFillAll => 'कृपया सभी विवरण भरें';
+
+  @override
+  String get contactDetails => 'संपर्क विवरण';
+
+  @override
+  String get altPhone => 'वैकल्पिक मोबाइल नंबर';
+
+  @override
+  String get altPhoneHint => 'वैकल्पिक नंबर दर्ज करें';
+
+  @override
+  String get emailLabel => 'पंजीकृत ईमेल';
+
+  @override
+  String get phoneLabel => 'पंजीकृत मोबाइल';
+
+  @override
+  String get emailLoginLink => 'ईमेल और पासवर्ड से लॉग इन करें';
+
+  @override
+  String get welcomeBack => 'आपका फिर से स्वागत है!';
+
+  @override
+  String get emailLoginTitle => 'ईमेल से लॉग इन करें';
 }

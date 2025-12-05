@@ -30,6 +30,11 @@
   "about": "हमारे बारे में",
   "logout": "लॉग आउट",
 
+  "myCropsTitle": "मेरी फसलें",
+  "addCropBtn": "फसल जोड़ें",
+  "noCropsAdded": "अभी तक कोई फसल नहीं जोड़ी गई",
+  "addCropsSubtitle": "बेचना शुरू करने के लिए\nअपनी सब्जियां या फल जोड़ें।",
+
   "addNewCrop": "नई फसल जोड़ें",
   "selectCategory": "श्रेणी चुनें",
   "categoryLabel": "श्रेणी (सब्जी/फल/अनाज)",
@@ -46,11 +51,6 @@
   "catFruit": "फल",
   "catGrain": "अनाज",
 
-  "myCropsTitle": "मेरी फसलें",
-  "addCropBtn": "फसल जोड़ें",
-  "noCropsAdded": "अभी तक कोई फसल नहीं जोड़ी गई",
-  "addCropsSubtitle": "बेचना शुरू करने के लिए\nअपनी सब्जियां या फल जोड़ें।",
-
   "cropTomato": "टमाटर",
   "cropOnion": "प्याज",
   "cropPotato": "आलू",
@@ -65,5 +65,30 @@
   "cropWheat": "गेहूं",
   "cropRice": "चावल",
   "cropJowar": "ज्वार",
-  "cropBajra": "बाजरा"
+  "cropBajra": "बाजरा",
+
+  "personalDetails": "व्यक्तिगत विवरण",
+  "firstName": "पहला नाम",
+  "lastName": "अंतिम नाम",
+  "firstNameHint": "पहला नाम दर्ज करें",
+  "lastNameHint": "अंतिम नाम दर्ज करें",
+  "dob": "जन्म तिथि",
+  "dobHint": "तारीख चुनें",
+  "gender": "लिंग",
+  "genderHint": "लिंग चुनें",
+  "male": "पुरुष",
+  "female": "महिला",
+  "other": "अन्य",
+  "continueBtn": "सहेजें और जारी रखें",
+  "errorFillAll": "कृपया सभी विवरण भरें",
+
+  "contactDetails": "संपर्क विवरण",
+  "altPhone": "वैकल्पिक मोबाइल नंबर",
+  "altPhoneHint": "वैकल्पिक नंबर दर्ज करें",
+  "emailLabel": "पंजीकृत ईमेल",
+  "phoneLabel": "पंजीकृत मोबाइल",
+
+  "emailLoginLink": "ईमेल और पासवर्ड से लॉग इन करें",
+  "welcomeBack": "आपका फिर से स्वागत है!",
+  "emailLoginTitle": "ईमेल से लॉग इन करें"
 }

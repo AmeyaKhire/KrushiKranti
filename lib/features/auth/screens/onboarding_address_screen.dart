@@ -113,8 +113,48 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
                   t[appLang]!["subtitle"]!,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                      color: AppColors.textSecondary, fontSize: 13),
+                    color: AppColors.textSecondary,
+                    fontSize: 13,
+                  ),
                 ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // --- UPDATED STEPPER INDICATOR ---
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Step 1 (Done)
+                  const CircleAvatar(
+                    radius: 14,
+                    backgroundColor: AppColors.brandGreen,
+                    child: Icon(Icons.check, color: Colors.white, size: 16),
+                  ),
+                  Container(height: 2, width: 40, color: AppColors.brandGreen),
+
+                  // Step 2 (Done)
+                  const CircleAvatar(
+                    radius: 14,
+                    backgroundColor: AppColors.brandGreen,
+                    child: Icon(Icons.check, color: Colors.white, size: 16),
+                  ),
+                  Container(height: 2, width: 40, color: AppColors.brandGreen),
+
+                  // Step 3 (Active)
+                  const CircleAvatar(
+                    radius: 14,
+                    backgroundColor: AppColors.brandGreen,
+                    child: Text(
+                      "3",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
 
               const SizedBox(height: 20),
@@ -170,9 +210,10 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
                   child: Text(
                     t[appLang]!["done"]!,
                     style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               )
@@ -206,9 +247,10 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
       child: Text(
         text,
         style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary),
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: AppColors.textPrimary,
+        ),
       ),
     );
   }

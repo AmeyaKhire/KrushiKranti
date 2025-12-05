@@ -18,7 +18,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? phoneErrorText;
 
-  // UI Translations
   final Map<String, Map<String, String>> translations = {
     "en": {
       "tagline": "Reconnect With Goodness",
@@ -27,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
       "otpInfo": "OTP will be sent on this number",
       "forgot": "Forgot Password?",
       "otpBtn": "Get OTP",
+      "emailLogin": "Log in with Email & Password", // ✅ NEW
       "terms": "By continuing you agree to our Terms & Conditions and Privacy & Legal Policy",
       "signUp": "Sign Up",
       "phoneError": "Please enter a valid 10-digit phone number"
@@ -38,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
       "otpInfo": "OTP इस नंबर पर भेजा जाएगा",
       "forgot": "पासवर्ड भूल गए?",
       "otpBtn": "OTP प्राप्त करें",
+      "emailLogin": "ईमेल और पासवर्ड से लॉग इन करें", // ✅ NEW
       "terms": "आगे बढ़ते हुए आप हमारी शर्तों और गोपनीयता नीति से सहमत हैं",
       "signUp": "साइन अप करें",
       "phoneError": "कृपया 10 अंकों का मान्य मोबाइल नंबर दर्ज करें"
@@ -49,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
       "otpInfo": "OTP या नंबरवर पाठविला जाईल",
       "forgot": "पासवर्ड विसरलात?",
       "otpBtn": "OTP मिळवा",
+      "emailLogin": "ईमेल आणि पासवर्डसह लॉग इन करा", // ✅ NEW
       "terms": "पुढे जाताना आपण आमच्या अटी आणि गोपनीयता धोरणास सहमती देता",
       "signUp": "साइन अप",
       "phoneError": "कृपया वैध 10 अंकी मोबाईल नंबर प्रविष्ट करा"
@@ -113,7 +115,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 240,
                         width: double.infinity,
                         fit: BoxFit.cover,
-                        // Fallback in case image is missing
                         errorBuilder: (context, error, stackTrace) => 
                           Container(height: 240, color: Colors.grey.shade200, child: const Icon(Icons.image, size: 50, color: Colors.grey)),
                       ),
@@ -261,18 +262,33 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                               return;
                             }
-
-                            // Save Language Preference before moving
                             await StorageService.saveLanguage(appLang);
-
-                            // ✅ FIX: Check if widget is still active before navigating
                             if (!mounted) return;
-
                             Navigator.pushNamed(context, AppRoutes.otp, arguments: true);
                           },
                           child: Text(
                             translations[appLang]!["otpBtn"]!,
                             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 15),
+
+                      // --- ✅ NEW: EMAIL LOGIN LINK ---
+                      Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, AppRoutes.emailLogin);
+                          },
+                          child: Text(
+                            translations[appLang]!["emailLogin"]!,
+                            style: const TextStyle(
+                              color: AppColors.brandGreen,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
                         ),
                       ),
