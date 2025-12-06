@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+// ✅ 1. Import Localization
+import '../../../l10n/app_localizations.dart';
+
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/services/storage_service.dart';
@@ -16,9 +19,13 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   bool _isLoading = false;
 
   Future<void> _handleLogin() async {
+    // ✅ Access localization for logic (SnackBar)
+    final l10n = AppLocalizations.of(context)!;
+
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter email and password")),
+        // ✅ Replaced hardcoded error with "Please fill all fields" key
+        SnackBar(content: Text(l10n.fillAllFields)), 
       );
       return;
     }
@@ -32,7 +39,6 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
     await StorageService.saveToken("email_login_token_123");
 
     // Also save email for profile display
-    // Note: We don't have phone number here, so pass empty string or handle it
     await StorageService.saveAuthDetails(
       email: _emailController.text.trim(),
       phone: "", 
@@ -52,6 +58,9 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ✅ 2. Initialize Localization Helper
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -68,13 +77,14 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                const Text(
-                  "Welcome Back!",
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                // ✅ 3. Localized Header
+                Text(
+                  l10n.welcomeBack, // "Welcome Back!"
+                  style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
                 ),
-                const Text(
-                  "Log in with Email",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.brandGreen),
+                Text(
+                  l10n.emailLoginTitle, // "Log in with Email"
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.brandGreen),
                 ),
 
                 const SizedBox(height: 40),
@@ -82,7 +92,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                 // Email Field
                 _inputField(
                   controller: _emailController,
-                  hint: "Enter Email Address",
+                  hint: l10n.emailHint, // ✅ "Enter Email Address"
                   icon: Icons.email_outlined,
                 ),
                 const SizedBox(height: 20),
@@ -90,12 +100,36 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                 // Password Field
                 _inputField(
                   controller: _passwordController,
-                  hint: "Enter Password",
+                  hint: l10n.passwordHint, // ✅ "Enter Password"
                   icon: Icons.lock_outline,
                   isPassword: true,
                 ),
 
-                const SizedBox(height: 40),
+                // ✅ NEW: FORGOT PASSWORD LINK ADDED HERE
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      // ✅ UPDATED: Navigate to Forgot Password Phone Screen
+                      Navigator.pushNamed(context, AppRoutes.forgotPasswordPhone);
+                    },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero, // Remove default padding to align perfectly
+                      minimumSize: const Size(50, 30),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      l10n.forgotPassword, // Uses the localization key
+                      style: const TextStyle(
+                        color: AppColors.brandGreen,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 30), // Adjusted spacing
 
                 // Login Button
                 SizedBox(
@@ -104,13 +138,16 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.black,
+                      foregroundColor: Colors.black, // Ensure text is visible on primary color
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                     onPressed: _isLoading ? null : _handleLogin,
                     child: _isLoading 
                       ? const CircularProgressIndicator(color: Colors.black)
-                      : const Text("Log In", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      : Text(
+                          l10n.loginBtn, // ✅ "Log In"
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+                        ),
                   ),
                 ),
               ],
@@ -142,7 +179,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
               controller: controller,
               obscureText: isPassword,
               decoration: InputDecoration(
-                hintText: hint,
+                hintText: hint, // This hint is now localized when passed from build()
                 border: InputBorder.none,
                 hintStyle: const TextStyle(color: AppColors.textSecondary),
               ),

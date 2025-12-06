@@ -90,5 +90,25 @@
 
   "emailLoginLink": "ईमेल और पासवर्ड से लॉग इन करें",
   "welcomeBack": "आपका फिर से स्वागत है!",
-  "emailLoginTitle": "ईमेल से लॉग इन करें"
+  "emailLoginTitle": "ईमेल से लॉग इन करें",
+
+  "emailHint": "ईमेल पता दर्ज करें",
+  "passwordHint": "पासवर्ड दर्ज करें",
+  "loginBtn": "लॉग इन करें",
+
+  "forgotPassword": "पासवर्ड भूल गए?",
+
+  "passwordRecovery": "पासवर्ड पुनर्प्राप्ति",
+  "verifyNumber": "अपना नंबर सत्यापित करें",
+  "verifyNumberSubtitle": "OTP कोड प्राप्त करने के लिए अपना पंजीकृत मोबाइल नंबर दर्ज करें।",
+  "nextBtn": "आगे बढ़ें",
+  "enterOtp": "कृपया OTP दर्ज करें",
+  "otpSubtitle": "आपके नंबर पर भेजा गया 4-अंकीय कोड दर्ज करें",
+  "submitOtp": "OTP जमा करें",
+  "resetPassword": "पासवर्ड रीसेट करें",
+  "newPassword": "नया पासवर्ड बनाएं",
+  "confirmPassword": "नए पासवर्ड की पुष्टि करें",
+  "submitBtn": "जमा करें",
+  "passwordsDoNotMatch": "पासवर्ड मेल नहीं खाते",
+  "passwordResetSuccess": "पासवर्ड सफलतापूर्वक बदल दिया गया!"
 }

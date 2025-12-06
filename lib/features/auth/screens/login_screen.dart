@@ -18,15 +18,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? phoneErrorText;
 
+  // Removed "forgot" keys from here as they are no longer needed
   final Map<String, Map<String, String>> translations = {
     "en": {
       "tagline": "Reconnect With Goodness",
       "start": "Let’s get you started",
       "phoneHint": "your phone number",
       "otpInfo": "OTP will be sent on this number",
-      "forgot": "Forgot Password?",
       "otpBtn": "Get OTP",
-      "emailLogin": "Log in with Email & Password", // ✅ NEW
+      "emailLogin": "Log in with Email & Password",
       "terms": "By continuing you agree to our Terms & Conditions and Privacy & Legal Policy",
       "signUp": "Sign Up",
       "phoneError": "Please enter a valid 10-digit phone number"
@@ -36,9 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
       "start": "चलें शुरू करते हैं",
       "phoneHint": "अपना मोबाइल नंबर",
       "otpInfo": "OTP इस नंबर पर भेजा जाएगा",
-      "forgot": "पासवर्ड भूल गए?",
       "otpBtn": "OTP प्राप्त करें",
-      "emailLogin": "ईमेल और पासवर्ड से लॉग इन करें", // ✅ NEW
+      "emailLogin": "ईमेल और पासवर्ड से लॉग इन करें",
       "terms": "आगे बढ़ते हुए आप हमारी शर्तों और गोपनीयता नीति से सहमत हैं",
       "signUp": "साइन अप करें",
       "phoneError": "कृपया 10 अंकों का मान्य मोबाइल नंबर दर्ज करें"
@@ -48,9 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
       "start": "चला सुरुवात करूया",
       "phoneHint": "आपला मोबाईल नंबर",
       "otpInfo": "OTP या नंबरवर पाठविला जाईल",
-      "forgot": "पासवर्ड विसरलात?",
       "otpBtn": "OTP मिळवा",
-      "emailLogin": "ईमेल आणि पासवर्डसह लॉग इन करा", // ✅ NEW
+      "emailLogin": "ईमेल आणि पासवर्डसह लॉग इन करा",
       "terms": "पुढे जाताना आपण आमच्या अटी आणि गोपनीयता धोरणास सहमती देता",
       "signUp": "साइन अप",
       "phoneError": "कृपया वैध 10 अंकी मोबाईल नंबर प्रविष्ट करा"
@@ -84,9 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // --- BACK BUTTON ---
-            Positioned(
-              top: 0,
-              left: 10,
+            Padding(
+              padding: const EdgeInsets.only(top: 10, left: 10),
               child: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
                 onPressed: () {
@@ -103,7 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               width: double.infinity,
               color: Colors.white,
-              padding: const EdgeInsets.only(top: 14),
               child: Column(
                 children: [
                   Container(
@@ -221,23 +217,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       const SizedBox(height: 8),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            translations[appLang]!["otpInfo"]!,
-                            style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
-                          ),
-                          Text(
-                            translations[appLang]!["forgot"]!,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.brandGreen,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
+                      // --- ✅ CHANGED SECTION START ---
+                      // Removed the Row containing the Forgot Password button.
+                      // Kept only the OTP Info text.
+                      Text(
+                        translations[appLang]!["otpInfo"]!,
+                        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
                       ),
+                      // --- ✅ CHANGED SECTION END ---
 
                       const SizedBox(height: 20),
 
@@ -275,7 +262,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       const SizedBox(height: 15),
 
-                      // --- ✅ NEW: EMAIL LOGIN LINK ---
+                      // --- EMAIL LOGIN LINK ---
                       Center(
                         child: GestureDetector(
                           onTap: () {

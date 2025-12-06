@@ -254,4 +254,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emailLoginTitle => 'Log in with Email';
+
+  @override
+  String get emailHint => 'Enter Email Address';
+
+  @override
+  String get passwordHint => 'Enter Password';
+
+  @override
+  String get loginBtn => 'Log In';
+
+  @override
+  String get forgotPassword => 'Forgot Password?';
+
+  @override
+  String get passwordRecovery => 'Password Recovery';
+
+  @override
+  String get verifyNumber => 'Verify your number';
+
+  @override
+  String get verifyNumberSubtitle =>
+      'Enter your registered mobile number to receive an OTP code.';
+
+  @override
+  String get nextBtn => 'Next';
+
+  @override
+  String get enterOtp => 'Please Input OTP';
+
+  @override
+  String get otpSubtitle => 'Enter the 4-digit code sent to your number';
+
+  @override
+  String get submitOtp => 'Submit OTP';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get newPassword => 'Create New Password';
+
+  @override
+  String get confirmPassword => 'Confirm New Password';
+
+  @override
+  String get submitBtn => 'Submit';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get passwordResetSuccess => 'Password Changed Successfully!';
 }

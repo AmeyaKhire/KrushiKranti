@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import '../../features/auth/screens/splash_screen.dart';
 import '../../features/auth/screens/language_selection_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
+import '../../features/auth/screens/forgot_password_phone_screen.dart';
+import '../../features/auth/screens/forgot_password_otp_screen.dart';
+import '../../features/auth/screens/reset_password_screen.dart';
 import '../../features/auth/screens/signup_screen.dart'; // Ensure Signup is here
 import '../../features/auth/screens/otp_screen.dart';
 import '../../features/auth/screens/onboarding_personal_screen.dart';
@@ -24,6 +27,9 @@ class AppRoutes {
   static const String languageSelection = '/language';
   static const String login = '/login';
   static const String emailLogin = '/email_login';
+  static const String forgotPasswordPhone = '/forgot_password_phone';
+  static const String forgotPasswordOtp = '/forgot_password_otp';
+  static const String resetPassword = '/reset_password';
   static const String signup = '/signup';
   static const String otp = '/otp';
   static const String onboardingPersonal = '/onboarding_personal';
@@ -43,6 +49,9 @@ class AppRoutes {
     languageSelection: (context) => const LanguageSelectionScreen(),
     login: (context) => const LoginScreen(),
     emailLogin: (context) => const EmailLoginScreen(),
+    forgotPasswordPhone: (context) => const ForgotPasswordPhoneScreen(),
+    forgotPasswordOtp: (context) => const ForgotPasswordOtpScreen(),
+    resetPassword: (context) => const ResetPasswordScreen(),
     signup: (context) => const SignUpScreen(),
     otp: (context) => const OtpScreen(),
     onboardingPersonal: (context) => const OnboardingPersonalScreen(),

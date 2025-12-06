@@ -90,5 +90,25 @@
 
   "emailLoginLink": "Log in with Email & Password",
   "welcomeBack": "Welcome Back!",
-  "emailLoginTitle": "Log in with Email"
+  "emailLoginTitle": "Log in with Email",
+
+  "emailHint": "Enter Email Address",
+  "passwordHint": "Enter Password",
+  "loginBtn": "Log In",
+
+  "forgotPassword": "Forgot Password?",
+
+  "passwordRecovery": "Password Recovery",
+  "verifyNumber": "Verify your number",
+  "verifyNumberSubtitle": "Enter your registered mobile number to receive an OTP code.",
+  "nextBtn": "Next",
+  "enterOtp": "Please Input OTP",
+  "otpSubtitle": "Enter the 4-digit code sent to your number",
+  "submitOtp": "Submit OTP",
+  "resetPassword": "Reset Password",
+  "newPassword": "Create New Password",
+  "confirmPassword": "Confirm New Password",
+  "submitBtn": "Submit",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "passwordResetSuccess": "Password Changed Successfully!"
 }

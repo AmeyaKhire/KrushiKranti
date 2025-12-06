@@ -254,4 +254,56 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get emailLoginTitle => 'ईमेलने लॉग इन करा';
+
+  @override
+  String get emailHint => 'ईमेल पत्ता प्रविष्ट करा';
+
+  @override
+  String get passwordHint => 'पासवर्ड प्रविष्ट करा';
+
+  @override
+  String get loginBtn => 'लॉग इन करा';
+
+  @override
+  String get forgotPassword => 'पासवर्ड विसरलात?';
+
+  @override
+  String get passwordRecovery => 'पासवर्ड पुनर्प्राप्ती';
+
+  @override
+  String get verifyNumber => 'तुमचा नंबर सत्यापित करा';
+
+  @override
+  String get verifyNumberSubtitle =>
+      'OTP कोड मिळवण्यासाठी तुमचा नोंदणीकृत मोबाईल नंबर टाका.';
+
+  @override
+  String get nextBtn => 'पुढे';
+
+  @override
+  String get enterOtp => 'कृपया OTP टाका';
+
+  @override
+  String get otpSubtitle => 'तुमच्या नंबरवर पाठवलेला 4-अंकी कोड टाका';
+
+  @override
+  String get submitOtp => 'OTP सबमिट करा';
+
+  @override
+  String get resetPassword => 'पासवर्ड रीसेट करा';
+
+  @override
+  String get newPassword => 'नवीन पासवर्ड तयार करा';
+
+  @override
+  String get confirmPassword => 'नवीन पासवर्डची पुष्टी करा';
+
+  @override
+  String get submitBtn => 'सबमिट करा';
+
+  @override
+  String get passwordsDoNotMatch => 'पासवर्ड जुळत नाहीत';
+
+  @override
+  String get passwordResetSuccess => 'पासवर्ड यशस्वीरित्या बदलला!';
 }
