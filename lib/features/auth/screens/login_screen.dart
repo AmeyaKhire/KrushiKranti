@@ -18,7 +18,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? phoneErrorText;
 
-  // Removed "forgot" keys from here as they are no longer needed
   final Map<String, Map<String, String>> translations = {
     "en": {
       "tagline": "Reconnect With Goodness",
@@ -63,9 +62,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> loadLanguage() async {
     String? lang = await StorageService.getLanguage();
-    setState(() {
-      appLang = lang ?? "en";
-    });
+    if (mounted) {
+      setState(() {
+        appLang = lang ?? "en";
+      });
+    }
   }
 
   bool validatePhoneNumber(String phone) {
@@ -217,14 +218,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       const SizedBox(height: 8),
 
-                      // --- ✅ CHANGED SECTION START ---
-                      // Removed the Row containing the Forgot Password button.
-                      // Kept only the OTP Info text.
                       Text(
                         translations[appLang]!["otpInfo"]!,
                         style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
                       ),
-                      // --- ✅ CHANGED SECTION END ---
 
                       const SizedBox(height: 20),
 
@@ -249,8 +246,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                               return;
                             }
+                            
+                            // 1. Perform Async Operation
                             await StorageService.saveLanguage(appLang);
-                            if (!mounted) return;
+
+                            // 2. ✅ CHECK CONTEXT BEFORE NAVIGATING
+                            if (!context.mounted) return;
+
+                            // 3. Navigate safely
                             Navigator.pushNamed(context, AppRoutes.otp, arguments: true);
                           },
                           child: Text(

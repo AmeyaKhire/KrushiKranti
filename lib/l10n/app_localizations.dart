@@ -693,6 +693,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password Changed Successfully!'**
   String get passwordResetSuccess;
+
+  /// No description provided for @sellTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop Details'**
+  String get sellTitle;
+
+  /// No description provided for @dateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get dateLabel;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select date'**
+  String get selectDate;
+
+  /// No description provided for @cropTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop Type'**
+  String get cropTypeLabel;
+
+  /// No description provided for @selectCropLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get selectCropLabel;
+
+  /// No description provided for @selectCropHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your crop'**
+  String get selectCropHint;
+
+  /// No description provided for @quantityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantityLabel;
+
+  /// No description provided for @unitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get unitLabel;
+
+  /// No description provided for @submitVcpBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit For VCP Verification'**
+  String get submitVcpBtn;
+
+  /// No description provided for @successVcp.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted for Verification!'**
+  String get successVcp;
+
+  /// No description provided for @catLegumes.
+  ///
+  /// In en, this message translates to:
+  /// **'Legumes'**
+  String get catLegumes;
+
+  /// No description provided for @catMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get catMore;
+
+  /// No description provided for @cropSpinach.
+  ///
+  /// In en, this message translates to:
+  /// **'Spinach'**
+  String get cropSpinach;
+
+  /// No description provided for @cropLadyfinger.
+  ///
+  /// In en, this message translates to:
+  /// **'Ladyfinger'**
+  String get cropLadyfinger;
+
+  /// No description provided for @unitKg.
+  ///
+  /// In en, this message translates to:
+  /// **'Kg'**
+  String get unitKg;
+
+  /// No description provided for @unitTon.
+  ///
+  /// In en, this message translates to:
+  /// **'Ton'**
+  String get unitTon;
+
+  /// No description provided for @unitQuintal.
+  ///
+  /// In en, this message translates to:
+  /// **'Quintal'**
+  String get unitQuintal;
+
+  /// No description provided for @yourSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Sales'**
+  String get yourSales;
+
+  /// No description provided for @orderId.
+  ///
+  /// In en, this message translates to:
+  /// **'Order ID'**
+  String get orderId;
+
+  /// No description provided for @placedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Placed on'**
+  String get placedOn;
+
+  /// No description provided for @items.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get items;
+
+  /// No description provided for @weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get weight;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @statusReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get statusReceived;
+
+  /// No description provided for @verifiedVcp.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified At VCP'**
+  String get verifiedVcp;
+
+  /// No description provided for @produceSaleEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Produce Sale Entry'**
+  String get produceSaleEntry;
+
+  /// No description provided for @acceptedWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted Weight'**
+  String get acceptedWeight;
+
+  /// No description provided for @settlementStatement.
+  ///
+  /// In en, this message translates to:
+  /// **'Settlement Statement'**
+  String get settlementStatement;
+
+  /// No description provided for @price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get price;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @finalBreakment.
+  ///
+  /// In en, this message translates to:
+  /// **'Final Breakment'**
+  String get finalBreakment;
+
+  /// No description provided for @loanDeduction.
+  ///
+  /// In en, this message translates to:
+  /// **'Loan Deduction'**
+  String get loanDeduction;
+
+  /// No description provided for @balance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get balance;
+
+  /// No description provided for @settlementStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Settlement Status'**
+  String get settlementStatus;
+
+  /// No description provided for @settlementCycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settlement Cycle'**
+  String get settlementCycle;
+
+  /// No description provided for @weighNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Weigh may be different due to moisture & sorting'**
+  String get weighNote;
 }
 
 class _AppLocalizationsDelegate

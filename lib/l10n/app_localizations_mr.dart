@@ -306,4 +306,112 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get passwordResetSuccess => 'पासवर्ड यशस्वीरित्या बदलला!';
+
+  @override
+  String get sellTitle => 'पिकाचा तपशील';
+
+  @override
+  String get dateLabel => 'तारीख';
+
+  @override
+  String get selectDate => 'तारीख निवडा';
+
+  @override
+  String get cropTypeLabel => 'पिकाचा प्रकार';
+
+  @override
+  String get selectCropLabel => 'निवडा';
+
+  @override
+  String get selectCropHint => 'आपले पीक निवडा';
+
+  @override
+  String get quantityLabel => 'प्रमाण';
+
+  @override
+  String get unitLabel => 'एकक';
+
+  @override
+  String get submitVcpBtn => 'VCP पडताळणीसाठी सबमिट करा';
+
+  @override
+  String get successVcp => 'पडताळणीसाठी सबमिट केले!';
+
+  @override
+  String get catLegumes => 'कडधान्ये';
+
+  @override
+  String get catMore => 'आणखी';
+
+  @override
+  String get cropSpinach => 'पालक';
+
+  @override
+  String get cropLadyfinger => 'भेंडी';
+
+  @override
+  String get unitKg => 'किलो';
+
+  @override
+  String get unitTon => 'टन';
+
+  @override
+  String get unitQuintal => 'क्विंटल';
+
+  @override
+  String get yourSales => 'तुमची विक्री';
+
+  @override
+  String get orderId => 'ऑर्डर आयडी';
+
+  @override
+  String get placedOn => 'तारीख';
+
+  @override
+  String get items => 'वस्तू';
+
+  @override
+  String get weight => 'वजन';
+
+  @override
+  String get status => 'स्थिती';
+
+  @override
+  String get statusReceived => 'प्राप्त झाले';
+
+  @override
+  String get verifiedVcp => 'VCP वर सत्यापित';
+
+  @override
+  String get produceSaleEntry => 'शेतमाल विक्री नोंद';
+
+  @override
+  String get acceptedWeight => 'स्वीकारलेले वजन';
+
+  @override
+  String get settlementStatement => 'हिशोब पत्रक';
+
+  @override
+  String get price => 'भाव';
+
+  @override
+  String get total => 'एकूण';
+
+  @override
+  String get finalBreakment => 'अंतिम हिशोब';
+
+  @override
+  String get loanDeduction => 'कर्ज कपात';
+
+  @override
+  String get balance => 'शिल्लक रक्कम';
+
+  @override
+  String get settlementStatus => 'हिशोब स्थिती';
+
+  @override
+  String get settlementCycle => 'हिशोब चक्र';
+
+  @override
+  String get weighNote => 'ओलावा आणि वर्गवारीमुळे वजन वेगळे असू शकते';
 }

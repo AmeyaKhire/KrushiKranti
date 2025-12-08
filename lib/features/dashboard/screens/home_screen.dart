@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../l10n/app_localizations.dart'; // ✅ Import Generated Translations
+import '../../../l10n/app_localizations.dart'; 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../dashboard/services/crop_service.dart';
-import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ Shortcut to access translations
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -46,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
         automaticallyImplyLeading: false, 
         titleSpacing: 24,
         title: Text(
-          l10n.krushiKranti, // ✅ Translated Brand Name
+          l10n.krushiKranti, 
           style: GoogleFonts.poppins(
             color: AppColors.brandGreen,
             fontSize: 32, 
@@ -71,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             
             // A. Weather
-            _buildWeatherHeader(l10n), // Pass translations
+            _buildWeatherHeader(l10n),
             const SizedBox(height: 24),
 
             // B. Banner
@@ -84,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // C. Quick Action Title
             Text(
-              l10n.quickAction, // ✅ Translated "Quick Action"
+              l10n.quickAction,
               style: GoogleFonts.poppins(
                 fontSize: 20, 
                 fontWeight: FontWeight.w700, 
@@ -100,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // E. Alerts
             Text(
-              l10n.alerts, // ✅ Translated "Alerts"
+              l10n.alerts,
               style: GoogleFonts.poppins(
                 fontSize: 20, 
                 fontWeight: FontWeight.w700,
@@ -113,9 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      
-      // --- 3. BOTTOM NAVIGATION ---
-      bottomNavigationBar: _buildBottomNavBar(context, l10n),
     );
   }
 
@@ -130,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,
+        // ✅ FIXED: Updated withValues
         border: Border.all(color: Colors.black.withValues(alpha: 0.05)), 
       ),
       child: Icon(icon, color: Colors.black54, size: 26),
@@ -145,19 +141,18 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center, // Vertically center everything
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // LEFT SIDE: Greeting & Location (Wrapped in Expanded to prevent overflow)
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min, // Hug content
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   "${l10n.hello} Ramesh,", 
                   style: GoogleFonts.poppins(
                     fontSize: 18, 
-                    fontWeight: FontWeight.w700, // Bold but not too heavy
+                    fontWeight: FontWeight.w700,
                     color: AppColors.brandGreen,
                     height: 1.2,
                   ),
@@ -187,26 +182,23 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // RIGHT SIDE: Temp Column + Cloud Icon
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Column for Temp & High/Low text
               Column(
-                crossAxisAlignment: CrossAxisAlignment.end, // Align text to the right
+                crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     "28°", 
                     style: GoogleFonts.poppins(
-                      fontSize: 32, // Reduced slightly from 36 for better balance
+                      fontSize: 32,
                       fontWeight: FontWeight.w700, 
                       color: AppColors.textPrimary,
                       height: 1.0,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  // Combined High/Low into one clean line
                   Text(
                     "High: 30° / Low: 15°", 
                     style: GoogleFonts.poppins(
@@ -217,9 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              const SizedBox(width: 12), // Space between text and cloud
-              
-              // Cloud Icon
+              const SizedBox(width: 12),
               const Icon(Icons.cloud, size: 48, color: Color(0xFF29B6F6)), 
             ],
           ),
@@ -241,6 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
+            // ✅ FIXED: Updated withValues
             color: AppColors.brandGreen.withValues(alpha: 0.4),
             blurRadius: 12,
             offset: const Offset(0, 6),
@@ -250,12 +241,12 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           Text(
-            l10n.assignMsg, // ✅ Translated
+            l10n.assignMsg,
             style: GoogleFonts.poppins(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 4),
           Text(
-            l10n.soonMsg, // ✅ Translated
+            l10n.soonMsg,
             style: GoogleFonts.poppins(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
           ),
         ],
@@ -270,6 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
+          // ✅ FIXED: Updated withValues
           BoxShadow(color: Colors.grey.withValues(alpha: 0.08), blurRadius: 15, offset: const Offset(0, 4)),
         ],
       ),
@@ -308,34 +300,34 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildQuickActionGrid(BuildContext context, AppLocalizations l10n) {
-    final String cropStatus = isAgentAssigned ? l10n.active : l10n.pending; // ✅ Translated Status
+    final String cropStatus = isAgentAssigned ? l10n.active : l10n.pending; 
     final Color cropStatusColor = isAgentAssigned ? AppColors.brandGreen : AppColors.pendingStatus;
 
     final items = [
       {
         "icon": Icons.grass, 
-        "title": l10n.cropDetail, // ✅ Translated
+        "title": l10n.cropDetail,
         "route": AppRoutes.cropList,
         "status": cropStatus, 
         "statusColor": cropStatusColor 
       },
       {
         "icon": Icons.bar_chart, 
-        "title": l10n.dailySale, // ✅ Translated
-        "route": null,
+        "title": l10n.dailySale,
+        "route": AppRoutes.sell, // ✅ Linked to Sell Screen
         "status": l10n.pending,
         "statusColor": AppColors.pendingStatus
       },
       {
         "icon": Icons.monetization_on_outlined, 
-        "title": l10n.funding, // ✅ Translated
+        "title": l10n.funding,
         "route": AppRoutes.requestFunds,
         "status": l10n.pending,
         "statusColor": AppColors.pendingStatus
       },
       {
         "icon": Icons.account_balance_wallet_outlined, 
-        "title": l10n.account, // ✅ Translated
+        "title": l10n.account,
         "route": null,
         "status": l10n.pending,
         "statusColor": AppColors.pendingStatus
@@ -386,6 +378,7 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
+            // ✅ FIXED: Updated withValues
             BoxShadow(
               color: Colors.grey.withValues(alpha: 0.06),
               blurRadius: 16,
@@ -443,6 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
+                // ✅ FIXED: Updated withValues
                 BoxShadow(
                   color: Colors.grey.withValues(alpha: 0.05), 
                   blurRadius: 10,
@@ -487,6 +481,7 @@ class _HomeScreenState extends State<HomeScreen> {
               shape: BoxShape.circle,
               border: Border.all(color: Colors.grey.shade300, width: 1.5),
               boxShadow: [
+                // ✅ FIXED: Updated withValues
                 BoxShadow(
                   color: Colors.grey.withValues(alpha: 0.05), 
                   blurRadius: 10,
@@ -497,97 +492,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Image.asset(
               'assets/images/ai_logo.png',
               fit: BoxFit.contain,
+              errorBuilder: (c, o, s) => const Icon(Icons.smart_toy, color: AppColors.brandGreen),
             ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // --- 3. BOTTOM NAVIGATION ---
-  Widget _buildBottomNavBar(BuildContext context, AppLocalizations l10n) {
-    return Container(
-      height: 90, 
-      padding: const EdgeInsets.only(bottom: 20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, -5)),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildNavItem(Icons.home_filled, l10n.home, true), // ✅ Translated
-          
-          GestureDetector(
-            onTap: () async {
-              await Navigator.pushNamed(context, AppRoutes.cropList);
-              _checkAgentStatus();
-            },
-            child: _buildNavItem(Icons.grass, l10n.crops, false), // ✅ Translated
-          ),
-          
-          GestureDetector(
-            onTap: () {
-              // TODO: Navigate to Sell Screen
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.add, color: AppColors.brandGreen, size: 36),
-                const SizedBox(height: 4),
-                Text(
-                  l10n.sell, // ✅ Translated
-                  style: GoogleFonts.poppins(
-                    fontSize: 13, 
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.brandGreen
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          _buildNavItem(Icons.shopping_basket, l10n.orders, false), // ✅ Translated
-          
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProfileScreen()),
-              );
-            },
-            child: _buildNavItem(Icons.person_outline_rounded, l10n.profile, false), // ✅ Translated
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, bool isActive) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icon, 
-          color: isActive ? Colors.black : Colors.grey.shade400, 
-          size: 30 
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label, 
-          style: GoogleFonts.poppins(
-            fontSize: 12, 
-            fontWeight: FontWeight.w600,
-            color: isActive ? Colors.black : Colors.grey.shade400
           ),
         ),
       ],

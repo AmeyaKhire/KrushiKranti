@@ -15,11 +15,16 @@ import '../../features/auth/screens/onboarding_contact_screen.dart';
 import '../../features/auth/screens/email_login_screen.dart';
 
 // --- YOUR SCREENS (Dashboard) ---
-import '../../features/dashboard/screens/home_screen.dart';
+import '../../features/dashboard/screens/main_layout_screen.dart';
 import '../../features/dashboard/screens/profile_screen.dart'; // ✅ This import is now used below
 import '../../features/crop_management/screens/crop_list_screen.dart';
 import '../../features/crop_management/screens/add_crop_screen.dart';
 import '../../features/funds/screens/request_funds_screen.dart';
+import '../../features/sell/screens/sell_screen.dart';
+
+// Import
+// Though this is mostly used in MainLayout
+import '../../features/orders/screens/order_detail_screen.dart';
 
 class AppRoutes {
   // --- Route Names ---
@@ -42,6 +47,8 @@ class AppRoutes {
   static const String cropList = '/crop_list';
   static const String addCrop = '/add_crop';
   static const String requestFunds = '/request_funds';
+  static const String sell = '/sell';
+  static const String orderDetail = '/order_detail';
 
   // --- Route Map ---
   static Map<String, WidgetBuilder> get routes => {
@@ -58,10 +65,12 @@ class AppRoutes {
     onboardingContact: (context) => const OnboardingContactScreen(),
     onboardingAddress: (context) => const OnboardingAddressScreen(),
 
-    dashboard: (context) => const HomeScreen(),
+    dashboard: (context) => const MainLayoutScreen(),
     profile: (context) => const ProfileScreen(), // ✅ ADDED PROFILE WIDGET
     cropList: (context) => const CropListScreen(),
     addCrop: (context) => const AddCropScreen(),
     requestFunds: (context) => const RequestFundsScreen(),
+    sell: (context) => const SellScreen(),
+    orderDetail: (context) => const OrderDetailScreen(),
   };
 }

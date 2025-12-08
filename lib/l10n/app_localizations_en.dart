@@ -306,4 +306,112 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordResetSuccess => 'Password Changed Successfully!';
+
+  @override
+  String get sellTitle => 'Crop Details';
+
+  @override
+  String get dateLabel => 'Date';
+
+  @override
+  String get selectDate => 'Select date';
+
+  @override
+  String get cropTypeLabel => 'Crop Type';
+
+  @override
+  String get selectCropLabel => 'Select';
+
+  @override
+  String get selectCropHint => 'Select your crop';
+
+  @override
+  String get quantityLabel => 'Quantity';
+
+  @override
+  String get unitLabel => 'Unit';
+
+  @override
+  String get submitVcpBtn => 'Submit For VCP Verification';
+
+  @override
+  String get successVcp => 'Submitted for Verification!';
+
+  @override
+  String get catLegumes => 'Legumes';
+
+  @override
+  String get catMore => 'More';
+
+  @override
+  String get cropSpinach => 'Spinach';
+
+  @override
+  String get cropLadyfinger => 'Ladyfinger';
+
+  @override
+  String get unitKg => 'Kg';
+
+  @override
+  String get unitTon => 'Ton';
+
+  @override
+  String get unitQuintal => 'Quintal';
+
+  @override
+  String get yourSales => 'Your Sales';
+
+  @override
+  String get orderId => 'Order ID';
+
+  @override
+  String get placedOn => 'Placed on';
+
+  @override
+  String get items => 'Items';
+
+  @override
+  String get weight => 'Weight';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get statusReceived => 'Received';
+
+  @override
+  String get verifiedVcp => 'Verified At VCP';
+
+  @override
+  String get produceSaleEntry => 'Produce Sale Entry';
+
+  @override
+  String get acceptedWeight => 'Accepted Weight';
+
+  @override
+  String get settlementStatement => 'Settlement Statement';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get finalBreakment => 'Final Breakment';
+
+  @override
+  String get loanDeduction => 'Loan Deduction';
+
+  @override
+  String get balance => 'Balance';
+
+  @override
+  String get settlementStatus => 'Settlement Status';
+
+  @override
+  String get settlementCycle => 'Settlement Cycle';
+
+  @override
+  String get weighNote => 'Weigh may be different due to moisture & sorting';
 }
