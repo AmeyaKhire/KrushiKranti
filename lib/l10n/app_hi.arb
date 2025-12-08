@@ -149,5 +149,14 @@
   "balance": "शेष राशि",
   "settlementStatus": "निपटान स्थिति",
   "settlementCycle": "निपटान चक्र",
-  "weighNote": "नमी और छंटाई के कारण वजन अलग हो सकता है"
+  "weighNote": "नमी और छंटाई के कारण वजन अलग हो सकता है",
+
+  "myDetails": "मेरा विवरण",
+  "kyc": "केवाईसी (KYC)",
+  "farmDetails": "खेत का विवरण",
+  "bankAccount": "बैंक खाता",
+  "finance": "वित्त",
+  "help": "सहायता",
+  "about": "हमारे बारे में",
+  "logout": "लॉग आउट"
 }

@@ -909,6 +909,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Weigh may be different due to moisture & sorting'**
   String get weighNote;
+
+  /// No description provided for @kyc.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC'**
+  String get kyc;
+
+  /// No description provided for @bankAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank Account'**
+  String get bankAccount;
 }
 
 class _AppLocalizationsDelegate

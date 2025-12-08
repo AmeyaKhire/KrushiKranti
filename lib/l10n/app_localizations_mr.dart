@@ -66,13 +66,13 @@ class AppLocalizationsMr extends AppLocalizations {
   String get profile => 'प्रोफाइल';
 
   @override
-  String get myDetails => 'माझी माहिती';
+  String get myDetails => 'माझा तपशील';
 
   @override
-  String get farmDetails => 'शेतीचा तपशील';
+  String get farmDetails => 'शेताचा तपशील';
 
   @override
-  String get finance => 'अर्थकारण';
+  String get finance => 'अर्थसहाय्य';
 
   @override
   String get subscription => 'सबस्क्रिप्शन';
@@ -414,4 +414,10 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get weighNote => 'ओलावा आणि वर्गवारीमुळे वजन वेगळे असू शकते';
+
+  @override
+  String get kyc => 'केवायसी (KYC)';
+
+  @override
+  String get bankAccount => 'बँक खाते';
 }

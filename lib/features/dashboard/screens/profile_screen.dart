@@ -1,4 +1,4 @@
-import 'dart:io'; // ✅ REQUIRED for FileImage
+import 'dart:io'; 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../l10n/app_localizations.dart';
@@ -16,8 +16,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String userName = "Loading...";
   String userEmail = "";
-  String userPhone = "";
-  String userPicPath = ""; // ✅ Variable to hold image path
+  String userPicPath = ""; 
 
   @override
   void initState() {
@@ -31,7 +30,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       
       if (mounted) {
         setState(() {
-          // Combine Name
           String first = userData['firstName'] ?? "";
           String last = userData['lastName'] ?? "";
           
@@ -42,8 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
 
           userEmail = userData['email'] ?? "";
-          userPhone = userData['phone'] ?? "";
-          userPicPath = userData['pic'] ?? ""; // ✅ Fetch Image Path
+          userPicPath = userData['pic'] ?? "";
         });
       }
     } catch (e) {
@@ -68,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 22),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -76,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: GoogleFonts.poppins(
             color: AppColors.brandGreen,
             fontSize: 24,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -85,27 +82,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
         child: Column(
           children: [
+            // --- 1. PROFILE HEADER ---
             _buildProfileHeader(),
-            const SizedBox(height: 30),
             
-            _buildMenuItem(Icons.shopping_bag_outlined, l10n.orders, onTap: () {}),
+            const SizedBox(height: 40), // Increased spacing
+            
+            // --- 2. MENU LIST ---
+            _buildMenuItem(Icons.badge_outlined, l10n.myDetails, onTap: () {}),
             _buildDivider(),
-            _buildMenuItem(Icons.person_outline, l10n.myDetails, onTap: () {}),
+            
+            _buildMenuItem(Icons.verified_user_outlined, l10n.kyc, onTap: () {}),
             _buildDivider(),
-            _buildMenuItem(Icons.location_on_outlined, l10n.farmDetails, onTap: () {}),
+            
+            _buildMenuItem(Icons.agriculture_outlined, l10n.farmDetails, onTap: () {}),
             _buildDivider(),
-            _buildMenuItem(Icons.payment, l10n.finance, onTap: () {}),
+            
+            // ✅ CHANGED: Used standard Bank Icon instead of Bag
+            _buildMenuItem(Icons.account_balance_outlined, l10n.bankAccount, onTap: () {}),
             _buildDivider(),
-            _buildMenuItem(Icons.local_offer_outlined, l10n.subscription, onTap: () {}),
+            
+            _buildMenuItem(Icons.account_balance_wallet_outlined, l10n.finance, onTap: () {}),
             _buildDivider(),
-            _buildMenuItem(Icons.notifications_none, l10n.notifications, onTap: () {}),
-            _buildDivider(),
+            
             _buildMenuItem(Icons.help_outline, l10n.help, onTap: () {}),
             _buildDivider(),
+            
             _buildMenuItem(Icons.info_outline, l10n.about, onTap: () {}),
-            _buildDivider(),
+            
+            const SizedBox(height: 50), // Increased spacing before logout
 
-            const SizedBox(height: 40),
+            // --- 3. LOGOUT BUTTON ---
             _buildLogoutButton(context, l10n),
             const SizedBox(height: 50), 
           ],
@@ -115,18 +121,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileHeader() {
-    // ✅ LOGIC: Check if file exists on phone
     bool hasImage = userPicPath.isNotEmpty && File(userPicPath).existsSync();
 
     return Row(
       children: [
+        // Avatar Box
         Container(
           width: 70,
           height: 70,
           decoration: BoxDecoration(
-            color: Colors.grey.shade300,
+            color: Colors.grey.shade200, 
             borderRadius: BorderRadius.circular(20),
-            // ✅ DISPLAY IMAGE IF AVAILABLE
             image: hasImage 
               ? DecorationImage(
                   image: FileImage(File(userPicPath)),
@@ -134,13 +139,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 )
               : null,
           ),
-          // Show Icon if no image
           child: !hasImage 
-              ? const Icon(Icons.person, size: 40, color: Colors.grey) 
+              ? Icon(Icons.person, size: 40, color: Colors.grey.shade400) 
               : null,
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: 20), // Increased gap
         
+        // Name & Info
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,32 +157,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       userName, 
                       style: GoogleFonts.poppins(
                         fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.bold, 
                         color: Colors.black,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const Icon(Icons.edit, size: 16, color: Colors.green), 
+                  const Icon(Icons.edit, size: 16, color: AppColors.brandGreen), 
                 ],
               ),
+              const SizedBox(height: 4),
               if (userEmail.isNotEmpty)
                 Text(
                   userEmail, 
                   style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    color: Colors.grey,
+                    fontSize: 12,
+                    color: Colors.grey, 
                   ),
                   overflow: TextOverflow.ellipsis,
-                ),
-              if (userPhone.isNotEmpty)
-                Text(
-                  userPhone, 
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
                 ),
             ],
           ),
@@ -189,22 +187,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildMenuItem(IconData icon, String title, {required VoidCallback onTap}) {
     return ListTile(
       onTap: onTap,
-      contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: Colors.black87, size: 26),
+      contentPadding: const EdgeInsets.symmetric(vertical: 4), // ✅ Added padding for breathing room
+      leading: Icon(icon, color: Colors.black87, size: 24),
       title: Text(
         title,
         style: GoogleFonts.poppins(
-          fontSize: 15,
-          fontWeight: FontWeight.w600, 
+          fontSize: 16, // Slightly larger font
+          fontWeight: FontWeight.w500, 
           color: Colors.black87,
         ),
       ),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+      // Design keeps it simple without trailing arrows, matching your screenshot
     );
   }
 
   Widget _buildDivider() {
-    return Divider(color: Colors.grey.shade200, height: 1, thickness: 1);
+    return const Divider(color: Color(0xFFEEEEEE), height: 1, thickness: 1);
   }
 
   Widget _buildLogoutButton(BuildContext context, AppLocalizations l10n) {
@@ -220,20 +218,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
       child: Container(
         width: double.infinity,
-        height: 55,
+        padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: Colors.grey.shade100, 
-          borderRadius: BorderRadius.circular(16),
+          color: const Color(0xFFF1F8E9), 
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.logout, color: Colors.green.shade700),
+            const Icon(Icons.logout, color: AppColors.brandGreen, size: 20),
             const SizedBox(width: 10),
             Text(
               l10n.logout,
               style: GoogleFonts.poppins(
-                color: Colors.green.shade700,
+                color: AppColors.brandGreen,
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),

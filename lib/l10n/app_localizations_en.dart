@@ -414,4 +414,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get weighNote => 'Weigh may be different due to moisture & sorting';
+
+  @override
+  String get kyc => 'KYC';
+
+  @override
+  String get bankAccount => 'Bank Account';
 }

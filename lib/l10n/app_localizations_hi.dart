@@ -81,7 +81,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get notifications => 'सूचनाएं';
 
   @override
-  String get help => 'मदद';
+  String get help => 'सहायता';
 
   @override
   String get about => 'हमारे बारे में';
@@ -414,4 +414,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get weighNote => 'नमी और छंटाई के कारण वजन अलग हो सकता है';
+
+  @override
+  String get kyc => 'केवाईसी (KYC)';
+
+  @override
+  String get bankAccount => 'बैंक खाता';
 }

@@ -149,5 +149,14 @@
   "balance": "Balance",
   "settlementStatus": "Settlement Status",
   "settlementCycle": "Settlement Cycle",
-  "weighNote": "Weigh may be different due to moisture & sorting"
+  "weighNote": "Weigh may be different due to moisture & sorting",
+
+  "myDetails": "My Details",
+  "kyc": "KYC",
+  "farmDetails": "Farm Details",
+  "bankAccount": "Bank Account",
+  "finance": "Finance",
+  "help": "Help",
+  "about": "About",
+  "logout": "Log Out"
 }
