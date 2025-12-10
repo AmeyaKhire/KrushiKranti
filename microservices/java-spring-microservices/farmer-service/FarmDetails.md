@@ -7,7 +7,6 @@ Farmer Profile and Management Service for Krushi Kranti platform.
 The Farmer Service manages farmer profiles including:
 - **My Details**: Personal Information, Contact Details, Address Details
 - **Farm Details**: Farm information used as collateral for loan approval
-- **Crop Details**: Crops grown on farms (database-driven master data)
 
 ## Architecture
 
@@ -30,20 +29,6 @@ The Farmer Service manages farmer profiles including:
 ### pincode_master table
 - Stores pincode → address mapping (district, taluka, state, villages)
 - Populated from Excel file import
-
-### crop_types table (Master)
-- Stores crop categories (Vegetables, Fruits, Grains, etc.)
-- Admin can add/edit/delete - reflects on farmer app
-
-### crop_names table (Master)
-- Stores crop names under each type (Tomato, Onion, etc.)
-- Includes local language names (Marathi)
-- Admin can add/edit/delete - reflects on farmer app
-
-### crops table
-- Stores farmer's crops on farms
-- Links to `farms` via `farm_id`
-- Links to `crop_names` via `crop_name_id`
 
 ## API Endpoints
 
@@ -115,40 +100,6 @@ Import pincode data from Excel file.
 
 #### GET `/farmer/admin/pincode/count`
 Get count of pincode records in database.
-
-### Crop Management
-
-#### GET `/farmer/profile/crop-types`
-Get all active crop types for dropdown.
-
-#### GET `/farmer/profile/crop-names?typeId={id}`
-Get crop names for a specific crop type.
-
-#### GET `/farmer/profile/crops`
-Get all crops for the logged-in farmer (across all farms).
-
-#### GET `/farmer/profile/crops/farm/{farmId}`
-Get crops for a specific farm.
-
-#### POST `/farmer/profile/crops`
-Create a new crop on a farm.
-- **Body**: `{ "farmId": 1, "cropNameId": 1, "areaAcres": 2.5 }`
-
-#### PUT `/farmer/profile/crops/{cropId}`
-Update an existing crop.
-
-#### DELETE `/farmer/profile/crops/{cropId}`
-Soft delete a crop.
-
-### Crop Admin (For Admin Panel)
-
-#### CRUD `/farmer/admin/crop-types`
-Full CRUD for crop types (admin only).
-
-#### CRUD `/farmer/admin/crop-names`
-Full CRUD for crop names (admin only).
-
-See [CropDetails.md](CropDetails.md) for complete API documentation.
 
 ## Farm Details Schema
 
@@ -240,6 +191,6 @@ mvn test -pl :farmer-service -Dtest=FarmControllerIntegrationTest
 Future enhancements:
 - On-field Officer verification endpoints (ONFIELD_OFFICER role)
 - KYC section
-- ~~Crop management~~ ✅ Implemented
+- Crop management
 - Bank details
 - gRPC endpoints for Funding Service integration
