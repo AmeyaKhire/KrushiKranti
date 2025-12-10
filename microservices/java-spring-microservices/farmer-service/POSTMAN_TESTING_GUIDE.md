@@ -65,56 +65,16 @@ Body: "Farmer Service is running"
 
 - **Method:** `POST`
 - **URL:** `http://localhost:4000/farmer/admin/pincode/import`
-- **Headers:** None required (or `Content-Type: application/x-www-form-urlencoded`)
-
-#### Step-by-Step Instructions in Postman:
-
-1. **Set Method:** Select `POST` from the method dropdown
-2. **Enter URL:** `http://localhost:4000/farmer/admin/pincode/import`
-3. **Go to Params Tab:**
-   - Click on the **"Params"** tab (below the URL bar)
-   - You'll see a table with columns: Key, Value, Description
-   - In the **Key** column, enter: `filePath`
-   - In the **Value** column, enter your file path:
-     ```
-     D:\Thynk Tech\Krushi_Kranti\Copy of List of Pin Codes of Maharashtra.xlsx
-     ```
-   - ✅ **Make sure the checkbox next to the key is CHECKED** (this enables the parameter)
-   - Postman will automatically URL-encode spaces and special characters
-
-4. **Alternative: Manual URL Encoding**
-   If you want to type it directly in the URL bar, use URL-encoded format:
-   ```
-   http://localhost:4000/farmer/admin/pincode/import?filePath=D%3A%5CThynk%20Tech%5CKrushi_Kranti%5CCopy%20of%20List%20of%20Pin%20Codes%20of%20Maharashtra.xlsx
-   ```
-   
-   **Encoding Rules:**
-   - `\` (backslash) → `%5C`
-   - Space → `%20` or `+`
-   - `:` → `%3A`
-
-5. **Send Request:** Click the **"Send"** button
-
-#### Important Notes:
-
-- ⚠️ **Do NOT put the file path directly in the URL bar without encoding** - this will cause a 400 error
-- ✅ **Use the Params tab** - Postman will handle encoding automatically
-- ✅ **Make sure the checkbox is checked** in the Params tab
-- ✅ **Use forward slashes `/` instead of backslashes `\`** if you have issues:
+- **Headers:**
   ```
-  D:/Thynk Tech/Krushi_Kranti/Copy of List of Pin Codes of Maharashtra.xlsx
+  Content-Type: application/json
   ```
-
-#### Example Request (Using Params Tab)
-
-```
-POST http://localhost:4000/farmer/admin/pincode/import
-
-Params Tab:
-Key: filePath
-Value: D:\Thynk Tech\Krushi_Kranti\Copy of List of Pin Codes of Maharashtra.xlsx
-✓ Checkbox: CHECKED
-```
+- **Body (raw JSON):**
+  ```json
+  {
+      "filePath": "D:\\Thynk Tech\\Krushi_Kranti\\Copy of List of Pin Codes of Maharashtra.xlsx"
+  }
+  ```
 
 #### Expected Response
 
@@ -124,31 +84,6 @@ Value: D:\Thynk Tech\Krushi_Kranti\Copy of List of Pin Codes of Maharashtra.xlsx
     "data": 1656
 }
 ```
-
-#### Troubleshooting 400 Bad Request Error:
-
-If you're still getting a 400 error:
-
-1. **Check the Params Tab:**
-   - Make sure the checkbox next to `filePath` is **CHECKED** ✓
-   - Verify the value doesn't have extra quotes or characters
-
-2. **Try with Forward Slashes:**
-   ```
-   D:/Thynk Tech/Krushi_Kranti/Copy of List of Pin Codes of Maharashtra.xlsx
-   ```
-
-3. **Check File Path:**
-   - Verify the file actually exists at that path
-   - Copy the exact path from Windows Explorer (Shift + Right-click → Copy as path)
-
-4. **Verify URL Encoding:**
-   - Look at the URL bar in Postman - spaces should be shown as `%20`
-   - If you see raw spaces, Postman isn't encoding properly
-
-5. **Check Service Logs:**
-   - Check Farmer Service logs for more detailed error messages
-
 
 > **Note:** The `data` field contains the number of pincode records imported.
 
@@ -232,22 +167,11 @@ Lookup address details (district, taluka, state, villages) for a given pincode.
 #### Request
 
 - **Method:** `GET`
-- **URL:** `http://localhost:4004/farmer/profile/address/lookup`
+- **URL:** `http://localhost:4004/farmer/profile/address/lookup?pincode=411001`
 - **Headers:**
   ```
   Authorization: Bearer {your-access-token}
   ```
-- **Params (Query Parameters):**
-  - `pincode`: 6-digit pincode
-  - Example: `411001`
-
-#### Example Request
-
-```
-GET http://localhost:4004/farmer/profile/address/lookup?pincode=411001
-Headers:
-  Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
-```
 
 #### Expected Response
 
@@ -283,8 +207,6 @@ Get the current farmer's profile details.
   Authorization: Bearer {your-access-token}
   ```
 
-> **Note:** The `X-User-Id` header is automatically added by API Gateway after JWT validation.
-
 #### Expected Response (Profile Exists)
 
 ```json
@@ -305,19 +227,6 @@ Get the current farmer's profile details.
         "district": "Pune",
         "taluka": "Pune",
         "state": "Maharashtra"
-    }
-}
-```
-
-#### Expected Response (Profile Not Created Yet)
-
-```json
-{
-    "message": "Farmer profile retrieved successfully",
-    "data": {
-        "userId": 1,
-        "email": "farmer@example.com",
-        "phoneNumber": "9876543210"
     }
 }
 ```
@@ -346,40 +255,9 @@ Create or update the farmer's profile details.
       "gender": "MALE",
       "alternatePhone": "9876543211",
       "pincode": "411001",
-      "village": "Village1"
+      "village": "Shivajinagar"
   }
   ```
-
-#### Gender Values
-
-- `MALE`
-- `FEMALE`
-- `OTHER`
-
-#### Date Format
-
-- Format: `YYYY-MM-DD`
-- Example: `1990-01-01`
-
-#### Example Request
-
-```
-PUT http://localhost:4004/farmer/profile/my-details
-Headers:
-  Content-Type: application/json
-  Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
-
-Body:
-{
-    "firstName": "John",
-    "lastName": "Doe",
-    "dateOfBirth": "1990-01-01",
-    "gender": "MALE",
-    "alternatePhone": "9876543211",
-    "pincode": "411001",
-    "village": "Village1"
-}
-```
 
 #### Expected Response
 
@@ -397,13 +275,361 @@ Body:
         "phoneNumber": "9876543210",
         "alternatePhone": "9876543211",
         "pincode": "411001",
-        "village": "Village1",
+        "village": "Shivajinagar",
         "district": "Pune",
         "taluka": "Pune",
         "state": "Maharashtra"
     }
 }
 ```
+
+---
+
+## 🌾 Farm Details Endpoints
+
+> **Note:** Farmer profile must be created before adding farms.
+
+### **STEP 8: Create a New Farm**
+
+Add a new farm for the logged-in farmer.
+
+#### Request
+
+- **Method:** `POST`
+- **URL:** `http://localhost:4004/farmer/profile/farms`
+- **Headers:**
+  ```
+  Content-Type: application/json
+  Authorization: Bearer {your-access-token}
+  ```
+- **Body:**
+  ```json
+  {
+      "farmName": "Main Farm",
+      "farmType": "ORGANIC",
+      "totalAreaAcres": 5.50,
+      "pincode": "411001",
+      "village": "Shivajinagar",
+      "soilType": "BLACK",
+      "irrigationType": "DRIP",
+      "landOwnership": "OWNED",
+      "surveyNumber": "123/45",
+      "landRegistrationNumber": "REG-2024-001",
+      "pattaNumber": "PAT-123",
+      "estimatedLandValue": 500000,
+      "encumbranceStatus": "FREE"
+  }
+  ```
+
+#### Field Descriptions
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `farmName` | String | Yes | Name of the farm |
+| `farmType` | Enum | No | ORGANIC, CONVENTIONAL, MIXED, VERMI_COMPOST |
+| `totalAreaAcres` | Decimal | Yes | Total area in acres |
+| `pincode` | String | Yes | 6-digit pincode |
+| `village` | String | Yes | Village from pincode lookup |
+| `soilType` | Enum | No | BLACK, RED, SANDY, LOAMY, CLAY, MIXED |
+| `irrigationType` | Enum | No | DRIP, SPRINKLER, RAINFED, CANAL, BORE_WELL, OPEN_WELL, MIXED |
+| `landOwnership` | Enum | Yes | OWNED, LEASED, SHARED, GOVERNMENT_ALLOTTED |
+| `surveyNumber` | String | No | Survey/Plot number |
+| `landRegistrationNumber` | String | No | Land registration document number |
+| `pattaNumber` | String | No | Patta/Record of Rights number |
+| `estimatedLandValue` | Decimal | No | Estimated value in INR |
+| `encumbranceStatus` | Enum | No | NOT_VERIFIED, FREE, ENCUMBERED, PARTIALLY_ENCUMBERED |
+| `encumbranceRemarks` | String | No | Details if encumbered |
+| `landDocumentUrl` | String | No | S3 URL for land document |
+| `surveyMapUrl` | String | No | S3 URL for survey map |
+| `registrationCertificateUrl` | String | No | S3 URL for registration certificate |
+
+#### Expected Response (201 Created)
+
+```json
+{
+    "message": "Farm created successfully",
+    "data": {
+        "id": 1,
+        "farmerId": 1,
+        "farmName": "Main Farm",
+        "farmType": "ORGANIC",
+        "totalAreaAcres": 5.50,
+        "pincode": "411001",
+        "village": "Shivajinagar",
+        "district": "Pune",
+        "taluka": "Pune",
+        "state": "Maharashtra",
+        "soilType": "BLACK",
+        "irrigationType": "DRIP",
+        "landOwnership": "OWNED",
+        "surveyNumber": "123/45",
+        "landRegistrationNumber": "REG-2024-001",
+        "pattaNumber": "PAT-123",
+        "estimatedLandValue": 500000,
+        "encumbranceStatus": "FREE",
+        "encumbranceRemarks": null,
+        "landDocumentUrl": null,
+        "surveyMapUrl": null,
+        "registrationCertificateUrl": null,
+        "isVerified": false,
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "verificationRemarks": null,
+        "isActive": true,
+        "createdAt": "2024-01-15T10:30:00",
+        "updatedAt": "2024-01-15T10:30:00"
+    }
+}
+```
+
+---
+
+### **STEP 9: Get All Farms**
+
+Get all farms for the logged-in farmer.
+
+#### Request
+
+- **Method:** `GET`
+- **URL:** `http://localhost:4004/farmer/profile/farms`
+- **Headers:**
+  ```
+  Authorization: Bearer {your-access-token}
+  ```
+
+#### Expected Response
+
+```json
+{
+    "message": "Farms retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "farmerId": 1,
+            "farmName": "Main Farm",
+            "farmType": "ORGANIC",
+            "totalAreaAcres": 5.50,
+            "pincode": "411001",
+            "village": "Shivajinagar",
+            "district": "Pune",
+            "taluka": "Pune",
+            "state": "Maharashtra",
+            "landOwnership": "OWNED",
+            "isVerified": false,
+            "isActive": true
+        },
+        {
+            "id": 2,
+            "farmerId": 1,
+            "farmName": "North Field",
+            "farmType": "CONVENTIONAL",
+            "totalAreaAcres": 3.00,
+            "landOwnership": "LEASED",
+            "isVerified": false,
+            "isActive": true
+        }
+    ]
+}
+```
+
+---
+
+### **STEP 10: Get Farm by ID**
+
+Get a specific farm by its ID.
+
+#### Request
+
+- **Method:** `GET`
+- **URL:** `http://localhost:4004/farmer/profile/farms/{farmId}`
+- **Headers:**
+  ```
+  Authorization: Bearer {your-access-token}
+  ```
+
+#### Example
+
+```
+GET http://localhost:4004/farmer/profile/farms/1
+```
+
+#### Expected Response
+
+```json
+{
+    "message": "Farm retrieved successfully",
+    "data": {
+        "id": 1,
+        "farmerId": 1,
+        "farmName": "Main Farm",
+        "farmType": "ORGANIC",
+        "totalAreaAcres": 5.50,
+        "pincode": "411001",
+        "village": "Shivajinagar",
+        "district": "Pune",
+        "taluka": "Pune",
+        "state": "Maharashtra",
+        "soilType": "BLACK",
+        "irrigationType": "DRIP",
+        "landOwnership": "OWNED",
+        "surveyNumber": "123/45",
+        "estimatedLandValue": 500000,
+        "encumbranceStatus": "FREE",
+        "isVerified": false,
+        "isActive": true,
+        "createdAt": "2024-01-15T10:30:00",
+        "updatedAt": "2024-01-15T10:30:00"
+    }
+}
+```
+
+---
+
+### **STEP 11: Update Farm**
+
+Update an existing farm.
+
+#### Request
+
+- **Method:** `PUT`
+- **URL:** `http://localhost:4004/farmer/profile/farms/{farmId}`
+- **Headers:**
+  ```
+  Content-Type: application/json
+  Authorization: Bearer {your-access-token}
+  ```
+- **Body:**
+  ```json
+  {
+      "farmName": "Main Farm - Updated",
+      "farmType": "MIXED",
+      "totalAreaAcres": 6.00,
+      "pincode": "411001",
+      "village": "Shivajinagar",
+      "soilType": "LOAMY",
+      "irrigationType": "MIXED",
+      "landOwnership": "OWNED",
+      "surveyNumber": "123/45-A",
+      "estimatedLandValue": 600000,
+      "encumbranceStatus": "FREE"
+  }
+  ```
+
+#### Expected Response
+
+```json
+{
+    "message": "Farm updated successfully",
+    "data": {
+        "id": 1,
+        "farmerId": 1,
+        "farmName": "Main Farm - Updated",
+        "farmType": "MIXED",
+        "totalAreaAcres": 6.00,
+        "soilType": "LOAMY",
+        "irrigationType": "MIXED",
+        "surveyNumber": "123/45-A",
+        "estimatedLandValue": 600000,
+        "updatedAt": "2024-01-15T11:00:00"
+    }
+}
+```
+
+---
+
+### **STEP 12: Delete Farm**
+
+Soft delete a farm (sets `isActive = false`).
+
+#### Request
+
+- **Method:** `DELETE`
+- **URL:** `http://localhost:4004/farmer/profile/farms/{farmId}`
+- **Headers:**
+  ```
+  Authorization: Bearer {your-access-token}
+  ```
+
+#### Example
+
+```
+DELETE http://localhost:4004/farmer/profile/farms/1
+```
+
+#### Expected Response
+
+```json
+{
+    "message": "Farm deleted successfully",
+    "data": null
+}
+```
+
+---
+
+### **STEP 13: Get Farm Count**
+
+Get the count of active farms for the farmer.
+
+#### Request
+
+- **Method:** `GET`
+- **URL:** `http://localhost:4004/farmer/profile/farms/count`
+- **Headers:**
+  ```
+  Authorization: Bearer {your-access-token}
+  ```
+
+#### Expected Response
+
+```json
+{
+    "message": "Farm count retrieved successfully",
+    "data": 2
+}
+```
+
+---
+
+### **STEP 14: Get Valid Collateral Farms**
+
+Get farms that are valid for use as loan collateral.
+
+A farm is valid collateral if:
+- `isVerified = true` (verified by on-field officer)
+- `encumbranceStatus = FREE` (no encumbrances)
+- `landOwnership` is `OWNED` or `GOVERNMENT_ALLOTTED`
+- `estimatedLandValue > 0`
+
+#### Request
+
+- **Method:** `GET`
+- **URL:** `http://localhost:4004/farmer/profile/farms/collateral`
+- **Headers:**
+  ```
+  Authorization: Bearer {your-access-token}
+  ```
+
+#### Expected Response
+
+```json
+{
+    "message": "Valid collateral farms retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "farmName": "Main Farm",
+            "totalAreaAcres": 5.50,
+            "landOwnership": "OWNED",
+            "estimatedLandValue": 500000,
+            "encumbranceStatus": "FREE",
+            "isVerified": true
+        }
+    ]
+}
+```
+
+> **Note:** If no farms meet the collateral criteria, an empty array is returned.
 
 ---
 
@@ -443,15 +669,39 @@ Headers:
 | `pincode` | Required, Must be exactly 6 digits |
 | `village` | Required, Must exist for the given pincode |
 
+### FarmRequest Validation
+
+| Field | Rules |
+|-------|-------|
+| `farmName` | Required, Max 200 characters |
+| `farmType` | Optional, One of: ORGANIC, CONVENTIONAL, MIXED, VERMI_COMPOST |
+| `totalAreaAcres` | Required, Must be > 0 |
+| `pincode` | Required, Must be exactly 6 digits |
+| `village` | Required, Must exist for the given pincode |
+| `soilType` | Optional, One of: BLACK, RED, SANDY, LOAMY, CLAY, MIXED |
+| `irrigationType` | Optional, One of: DRIP, SPRINKLER, RAINFED, CANAL, BORE_WELL, OPEN_WELL, MIXED |
+| `landOwnership` | Required, One of: OWNED, LEASED, SHARED, GOVERNMENT_ALLOTTED |
+| `surveyNumber` | Optional, Max 100 characters |
+| `estimatedLandValue` | Optional, Must be >= 0 |
+| `encumbranceStatus` | Optional, One of: NOT_VERIFIED, FREE, ENCUMBERED, PARTIALLY_ENCUMBERED |
+
 ---
 
 ## 🔍 Error Scenarios to Test
 
-### 1. Invalid Pincode
+### 1. Invalid Pincode for Farm
 
 **Request:**
 ```
-GET http://localhost:4004/farmer/profile/address/lookup?pincode=999999
+POST http://localhost:4004/farmer/profile/farms
+Body:
+{
+    "farmName": "Test Farm",
+    "totalAreaAcres": 5.00,
+    "pincode": "999999",
+    "village": "Test",
+    "landOwnership": "OWNED"
+}
 ```
 
 **Expected Response:**
@@ -466,85 +716,98 @@ GET http://localhost:4004/farmer/profile/address/lookup?pincode=999999
 
 **Request:**
 ```
-PUT http://localhost:4004/farmer/profile/my-details
+POST http://localhost:4004/farmer/profile/farms
 Body:
 {
-    "firstName": "John",
-    "lastName": "Doe",
-    "dateOfBirth": "1990-01-01",
-    "gender": "MALE",
+    "farmName": "Test Farm",
+    "totalAreaAcres": 5.00,
     "pincode": "411001",
-    "village": "InvalidVillage"
+    "village": "InvalidVillage",
+    "landOwnership": "OWNED"
 }
 ```
 
 **Expected Response:**
 ```json
 {
-    "message": "Selected village does not exist for the given pincode",
+    "message": "Village 'InvalidVillage' is not valid for pincode: 411001",
     "data": null
 }
 ```
 
-### 3. Validation Errors
+### 3. Duplicate Farm Name
 
 **Request:**
 ```
-PUT http://localhost:4004/farmer/profile/my-details
+POST http://localhost:4004/farmer/profile/farms
 Body:
 {
-    "firstName": "",
-    "lastName": "Doe",
-    "dateOfBirth": "1990-01-01",
-    "gender": "MALE",
+    "farmName": "Main Farm",
+    "totalAreaAcres": 3.00,
+    "pincode": "411001",
+    "village": "Shivajinagar",
+    "landOwnership": "LEASED"
+}
+```
+
+**Expected Response (if "Main Farm" already exists):**
+```json
+{
+    "message": "A farm with this name already exists",
+    "data": null
+}
+```
+
+### 4. Farm Not Found
+
+**Request:**
+```
+GET http://localhost:4004/farmer/profile/farms/999
+```
+
+**Expected Response:**
+```json
+{
+    "message": "Farm not found with ID: 999",
+    "data": null
+}
+```
+
+### 5. Farmer Profile Not Found
+
+**Request (with user who hasn't created farmer profile):**
+```
+GET http://localhost:4004/farmer/profile/farms
+```
+
+**Expected Response:**
+```json
+{
+    "message": "Farmer profile not found. Please complete your profile first.",
+    "data": null
+}
+```
+
+### 6. Validation Errors
+
+**Request:**
+```
+POST http://localhost:4004/farmer/profile/farms
+Body:
+{
+    "farmName": "",
+    "totalAreaAcres": -5,
     "pincode": "123",
-    "village": "Village1"
+    "landOwnership": null
 }
 ```
 
 **Expected Response:**
 ```json
 {
-    "message": "Validation failed: firstName: First name is required, pincode: Pincode must be 6 digits",
+    "message": "Validation failed: farmName: Farm name is required, pincode: Pincode must be 6 digits, totalAreaAcres: Total area must be greater than 0, landOwnership: Land ownership is required, village: Village is required",
     "data": null
 }
-```
-
-### 4. Invalid Date of Birth (Future Date)
-
-**Request:**
-```
-PUT http://localhost:4004/farmer/profile/my-details
-Body:
-{
-    "firstName": "John",
-    "lastName": "Doe",
-    "dateOfBirth": "2025-12-31",
-    "gender": "MALE",
-    "pincode": "411001",
-    "village": "Village1"
-}
-```
-
-**Expected Response:**
-```json
-{
-    "message": "Validation failed: dateOfBirth: Date of birth must be in the past",
-    "data": null
-}
-```
-
-### 5. Missing JWT Token
-
-**Request:**
-```
-GET http://localhost:4004/farmer/profile/my-details
-(No Authorization header)
-```
-
-**Expected Response:**
-```
-Status: 401 Unauthorized
 ```
 
 ---
@@ -561,7 +824,10 @@ Create a Postman environment with these variables:
 | `base_url_direct` | `http://localhost:4000` | `http://localhost:4000` |
 | `auth_token` | (empty) | (will be set after login) |
 | `user_id` | `1` | `1` |
-| `excel_file_path` | `D:\Thynk Tech\Krushi_Kranti\Copy of List of Pin Codes of Maharashtra.xlsx` | (your path) |
+| `farm_id` | `1` | (will be set after creating farm) |
+| `crop_type_id` | `1` | `1` (Vegetables) |
+| `crop_name_id` | `1` | `1` (Tomato) |
+| `crop_id` | `1` | (will be set after creating crop) |
 
 ### Collection Structure
 
@@ -569,16 +835,53 @@ Create a Postman environment with these variables:
 Farmer Service Tests
 ├── 1. Health Check
 │   └── GET /farmer/health
-├── 2. Admin Endpoints
+├── 2. Admin Endpoints (Pincode)
 │   ├── POST /farmer/admin/pincode/import
 │   └── GET /farmer/admin/pincode/count
 ├── 3. Authentication
 │   └── POST /auth/login
 ├── 4. Address Lookup
 │   └── GET /farmer/profile/address/lookup?pincode={pincode}
-└── 5. Profile Management
-    ├── GET /farmer/profile/my-details
-    └── PUT /farmer/profile/my-details
+├── 5. Profile Management (My Details)
+│   ├── GET /farmer/profile/my-details
+│   └── PUT /farmer/profile/my-details
+├── 6. Farm Management
+│   ├── GET /farmer/profile/farms
+│   ├── POST /farmer/profile/farms
+│   ├── GET /farmer/profile/farms/{farmId}
+│   ├── PUT /farmer/profile/farms/{farmId}
+│   ├── DELETE /farmer/profile/farms/{farmId}
+│   ├── GET /farmer/profile/farms/count
+│   └── GET /farmer/profile/farms/collateral
+├── 7. Crop Master Data (Dropdowns)
+│   ├── GET /farmer/profile/crop-types
+│   ├── GET /farmer/profile/crop-names?typeId={typeId}
+│   └── GET /farmer/profile/crop-names/search?term={term}
+├── 8. Crop Management (Farmer)
+│   ├── GET /farmer/profile/crops
+│   ├── POST /farmer/profile/crops
+│   ├── GET /farmer/profile/crops/{cropId}
+│   ├── PUT /farmer/profile/crops/{cropId}
+│   ├── DELETE /farmer/profile/crops/{cropId}
+│   ├── GET /farmer/profile/crops/farm/{farmId}
+│   ├── GET /farmer/profile/crops/farm/{farmId}/count
+│   └── GET /farmer/profile/crops/type/{cropTypeId}
+├── 9. Admin - Crop Types
+│   ├── GET /farmer/admin/crop-types
+│   ├── POST /farmer/admin/crop-types
+│   ├── GET /farmer/admin/crop-types/{id}
+│   ├── PUT /farmer/admin/crop-types/{id}
+│   ├── DELETE /farmer/admin/crop-types/{id}
+│   └── POST /farmer/admin/crop-types/{id}/restore
+└── 10. Admin - Crop Names
+    ├── GET /farmer/admin/crop-names
+    ├── GET /farmer/admin/crop-names?typeId={typeId}
+    ├── GET /farmer/admin/crop-names/search?term={term}
+    ├── POST /farmer/admin/crop-names
+    ├── GET /farmer/admin/crop-names/{id}
+    ├── PUT /farmer/admin/crop-names/{id}
+    ├── DELETE /farmer/admin/crop-names/{id}
+    └── POST /farmer/admin/crop-names/{id}/restore
 ```
 
 ---
@@ -595,8 +898,14 @@ Farmer Service Tests
 6. ✅ **Get My Details** - Should return empty profile initially
 7. ✅ **Create Profile** - PUT with complete data
 8. ✅ **Get My Details Again** - Verify profile was saved
-9. ✅ **Update Profile** - Modify and save again
-10. ✅ **Test Error Scenarios** - Invalid data, missing fields, etc.
+9. ✅ **Create Farm** - POST with farm data
+10. ✅ **Get All Farms** - Should show created farm
+11. ✅ **Get Farm by ID** - Verify specific farm details
+12. ✅ **Update Farm** - Modify and save
+13. ✅ **Get Farm Count** - Verify count
+14. ✅ **Get Collateral Farms** - May be empty (not verified yet)
+15. ✅ **Delete Farm** - Soft delete
+16. ✅ **Test Error Scenarios** - Invalid data, duplicates, etc.
 
 ---
 
@@ -606,7 +915,8 @@ Farmer Service Tests
 2. **Use Environment Variables:** Create Postman environments for different setups (local, docker, etc.)
 3. **Test Error Cases:** Always test validation errors and edge cases.
 4. **Check Logs:** Monitor Farmer Service logs for debugging.
-5. **Database State:** Clear database if you want to test fresh profile creation.
+5. **Farm Order:** Create farmer profile first, then farms.
+6. **Collateral Status:** Farms must be verified by on-field officer to be valid collateral.
 
 ---
 
@@ -646,7 +956,1261 @@ Farmer Service Tests
 - Verify Auth Service is running on port 9090 (gRPC)
 - Check Auth Service logs for connection issues
 
+### Issue: Farmer Profile Not Found (when creating farm)
+
+**Solution:**
+- Create farmer profile first using PUT `/farmer/profile/my-details`
+- Then create farms
+
+---
+
+## 🌱 Crop Details Endpoints
+
+Crop Details allows farmers to add crops to their farms. The system uses database-driven master data (crop types and crop names) that admin can manage.
+
+> **Prerequisites:** 
+> - Farmer profile must be created
+> - At least one farm must exist
+
+---
+
+### **STEP 15: Get Crop Types (Dropdown 1)**
+
+Get all active crop types for the first dropdown in farmer app.
+
+#### Request
+
+- **Method:** `GET`
+- **URL (Direct):** `http://localhost:4000/farmer/profile/crop-types`
+- **URL (Via Gateway):** `http://localhost:4004/farmer/profile/crop-types`
+- **Headers:** None required (public endpoint)
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop types retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "typeName": "VEGETABLE",
+            "displayName": "Vegetables",
+            "description": "Fresh vegetables including leafy greens, root vegetables, and gourds",
+            "iconUrl": null,
+            "displayOrder": 1,
+            "isActive": true,
+            "cropNameCount": 31,
+            "createdAt": "2025-12-09T10:57:13",
+            "updatedAt": "2025-12-09T10:57:13"
+        },
+        {
+            "id": 2,
+            "typeName": "FRUIT",
+            "displayName": "Fruits",
+            "description": "Fresh fruits including tropical, citrus, and seasonal fruits",
+            "iconUrl": null,
+            "displayOrder": 2,
+            "isActive": true,
+            "cropNameCount": 26,
+            "createdAt": "2025-12-09T10:57:13",
+            "updatedAt": "2025-12-09T10:57:13"
+        },
+        {
+            "id": 3,
+            "typeName": "GRAIN_CEREAL",
+            "displayName": "Grains & Cereals",
+            "description": "Staple grains and cereals like wheat, rice, and millets",
+            "iconUrl": null,
+            "displayOrder": 3,
+            "isActive": true,
+            "cropNameCount": 9,
+            "createdAt": "2025-12-09T10:57:13",
+            "updatedAt": "2025-12-09T10:57:13"
+        }
+    ]
+}
+```
+
+> **Note:** The system is pre-seeded with 10 crop types and 144+ crop names.
+
+---
+
+### **STEP 16: Get Crop Names by Type (Dropdown 2)**
+
+Get active crop names for a specific crop type. Used for the second dropdown when user selects a crop type.
+
+#### Request
+
+- **Method:** `GET`
+- **URL (Direct):** `http://localhost:4000/farmer/profile/crop-names?typeId=1`
+- **URL (Via Gateway):** `http://localhost:4004/farmer/profile/crop-names?typeId=1`
+- **Headers:** None required (public endpoint)
+- **Query Parameters:**
+  | Parameter | Required | Description |
+  |-----------|----------|-------------|
+  | `typeId` | Yes | The crop type ID from Dropdown 1 |
+
+#### Expected Response (typeId=1 for Vegetables)
+
+```json
+{
+    "message": "Crop names retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "cropTypeId": 1,
+            "cropTypeName": "VEGETABLE",
+            "cropTypeDisplayName": "Vegetables",
+            "name": "TOMATO",
+            "displayName": "Tomato",
+            "localName": "टमाटर",
+            "description": null,
+            "iconUrl": null,
+            "displayOrder": 1,
+            "isActive": true,
+            "createdAt": "2025-12-09T10:57:13",
+            "updatedAt": "2025-12-09T10:57:13"
+        },
+        {
+            "id": 2,
+            "cropTypeId": 1,
+            "cropTypeName": "VEGETABLE",
+            "cropTypeDisplayName": "Vegetables",
+            "name": "ONION",
+            "displayName": "Onion",
+            "localName": "कांदा",
+            "description": null,
+            "iconUrl": null,
+            "displayOrder": 2,
+            "isActive": true,
+            "createdAt": "2025-12-09T10:57:13",
+            "updatedAt": "2025-12-09T10:57:13"
+        },
+        {
+            "id": 3,
+            "cropTypeId": 1,
+            "cropTypeName": "VEGETABLE",
+            "cropTypeDisplayName": "Vegetables",
+            "name": "POTATO",
+            "displayName": "Potato",
+            "localName": "बटाटा",
+            "description": null,
+            "iconUrl": null,
+            "displayOrder": 3,
+            "isActive": true,
+            "createdAt": "2025-12-09T10:57:13",
+            "updatedAt": "2025-12-09T10:57:13"
+        }
+    ]
+}
+```
+
+---
+
+### **STEP 17: Search Crop Names**
+
+Search crop names by term (for autocomplete feature).
+
+#### Request
+
+- **Method:** `GET`
+- **URL (Direct):** `http://localhost:4000/farmer/profile/crop-names/search?term=tom`
+- **URL (Via Gateway):** `http://localhost:4004/farmer/profile/crop-names/search?term=tom`
+- **Headers:** None required (public endpoint)
+- **Query Parameters:**
+  | Parameter | Required | Description |
+  |-----------|----------|-------------|
+  | `term` | Yes | Search term (searches displayName and localName) |
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop names retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "cropTypeId": 1,
+            "cropTypeName": "VEGETABLE",
+            "cropTypeDisplayName": "Vegetables",
+            "name": "TOMATO",
+            "displayName": "Tomato",
+            "localName": "टमाटर",
+            "displayOrder": 1,
+            "isActive": true
+        }
+    ]
+}
+```
+
+---
+
+### **STEP 18: Create a Crop**
+
+Add a new crop to a farm.
+
+#### Request
+
+- **Method:** `POST`
+- **URL (Direct):** `http://localhost:4000/farmer/profile/crops`
+- **URL (Via Gateway):** `http://localhost:4004/farmer/profile/crops`
+- **Headers:**
+  ```
+  Content-Type: application/json
+  Authorization: Bearer {your-access-token}
+  ```
+  OR (for direct testing):
+  ```
+  Content-Type: application/json
+  X-User-Id: 1
+  ```
+- **Body:**
+  ```json
+  {
+      "farmId": 1,
+      "cropNameId": 1,
+      "areaAcres": 2.50,
+      "sowingDate": "2025-06-15",
+      "harvestingDate": "2025-10-15",
+      "cropStatus": "PLANNED"
+  }
+  ```
+  
+
+#### Field Descriptions
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `farmId` | Long | Yes | The farm ID to add crop to |
+| `cropNameId` | Long | Yes | The crop name ID from Dropdown 2 |
+| `areaAcres` | Decimal | Yes | Area in acres (must be > 0) |
+| `sowingDate` | Date | No | Sowing date (YYYY-MM-DD format) |
+| `harvestingDate` | Date | No | Expected/Actual harvest date (YYYY-MM-DD format) |
+| `cropStatus` | Enum | No | PLANNED, SOWN, GROWING, HARVESTED, FAILED (default: PLANNED) |
+
+#### Crop Status Options
+
+| Status | Description |
+|--------|-------------|
+| `PLANNED` | Crop is planned but not yet sown |
+| `SOWN` | Seeds have been planted |
+| `GROWING` | Crop is actively growing |
+| `HARVESTED` | Crop has been harvested |
+| `FAILED` | Crop failed due to weather/pests/disease |
+
+#### Expected Response (201 Created)
+
+```json
+{
+    "message": "Crop created successfully",
+    "data": {
+        "id": 1,
+        "farmId": 1,
+        "farmName": "Main Farm",
+        "cropTypeId": 1,
+        "cropTypeName": "VEGETABLE",
+        "cropTypeDisplayName": "Vegetables",
+        "cropNameId": 1,
+        "cropName": "TOMATO",
+        "cropDisplayName": "Tomato",
+        "cropLocalName": "टमाटर",
+        "areaAcres": 2.50,
+        "sowingDate": "2025-06-15",
+        "harvestingDate": "2025-10-15",
+        "cropStatus": "PLANNED",
+        "isActive": true,
+        "createdAt": "2025-12-09T11:07:40",
+        "updatedAt": "2025-12-09T11:07:40"
+    }
+}
+```
+
+---
+
+### **STEP 19: Get All Crops for Farmer**
+
+Get all crops across all farms for the logged-in farmer.
+
+#### Request
+
+- **Method:** `GET`
+- **URL (Direct):** `http://localhost:4000/farmer/profile/crops`
+- **URL (Via Gateway):** `http://localhost:4004/farmer/profile/crops`
+- **Headers:**
+  ```
+  Authorization: Bearer {your-access-token}
+  ```
+  OR (for direct testing):
+  ```
+  X-User-Id: 1
+  ```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crops retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "farmId": 1,
+            "farmName": "Main Farm",
+            "cropTypeId": 1,
+            "cropTypeName": "VEGETABLE",
+            "cropTypeDisplayName": "Vegetables",
+            "cropNameId": 1,
+            "cropName": "TOMATO",
+            "cropDisplayName": "Tomato",
+            "cropLocalName": "टमाटर",
+            "areaAcres": 2.50,
+            "sowingDate": "2025-06-15",
+            "harvestingDate": "2025-10-15",
+            "cropStatus": "GROWING",
+            "isActive": true,
+            "createdAt": "2025-12-09T11:07:40",
+            "updatedAt": "2025-12-09T11:07:40"
+        },
+        {
+            "id": 2,
+            "farmId": 1,
+            "farmName": "Main Farm",
+            "cropTypeId": 2,
+            "cropTypeName": "FRUIT",
+            "cropTypeDisplayName": "Fruits",
+            "cropNameId": 33,
+            "cropName": "MANGO",
+            "cropDisplayName": "Mango",
+            "cropLocalName": "आंबा",
+            "areaAcres": 4.00,
+            "sowingDate": null,
+            "harvestingDate": "2025-05-01",
+            "cropStatus": "PLANNED",
+            "isActive": true,
+            "createdAt": "2025-12-09T11:08:52",
+            "updatedAt": "2025-12-09T11:08:52"
+        }
+    ]
+}
+```
+
+---
+
+### **STEP 20: Get Crops by Farm**
+
+Get all crops for a specific farm.
+
+#### Request
+
+- **Method:** `GET`
+- **URL (Direct):** `http://localhost:4000/farmer/profile/crops/farm/{farmId}`
+- **URL (Via Gateway):** `http://localhost:4004/farmer/profile/crops/farm/{farmId}`
+- **Headers:**
+  ```
+  Authorization: Bearer {your-access-token}
+  ```
+
+#### Example
+
+```
+GET http://localhost:4000/farmer/profile/crops/farm/1
+X-User-Id: 1
+```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crops retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "farmId": 1,
+            "farmName": "Main Farm",
+            "cropTypeId": 1,
+            "cropTypeName": "VEGETABLE",
+            "cropTypeDisplayName": "Vegetables",
+            "cropNameId": 1,
+            "cropName": "TOMATO",
+            "cropDisplayName": "Tomato",
+            "cropLocalName": "टमाटर",
+            "areaAcres": 2.50,
+            "sowingDate": "2025-06-15",
+            "harvestingDate": "2025-10-15",
+            "cropStatus": "GROWING",
+            "isActive": true
+        }
+    ]
+}
+```
+
+---
+
+### **STEP 21: Get Crop by ID**
+
+Get a specific crop by its ID.
+
+#### Request
+
+- **Method:** `GET`
+- **URL (Direct):** `http://localhost:4000/farmer/profile/crops/{cropId}`
+- **URL (Via Gateway):** `http://localhost:4004/farmer/profile/crops/{cropId}`
+- **Headers:**
+  ```
+  Authorization: Bearer {your-access-token}
+  ```
+
+#### Example
+
+```
+GET http://localhost:4000/farmer/profile/crops/1
+X-User-Id: 1
+```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop retrieved successfully",
+    "data": {
+        "id": 1,
+        "farmId": 1,
+        "farmName": "Main Farm",
+        "cropTypeId": 1,
+        "cropTypeName": "VEGETABLE",
+        "cropTypeDisplayName": "Vegetables",
+        "cropNameId": 1,
+        "cropName": "TOMATO",
+        "cropDisplayName": "Tomato",
+        "cropLocalName": "टमाटर",
+        "areaAcres": 2.50,
+        "sowingDate": "2025-06-15",
+        "harvestingDate": "2025-10-15",
+        "cropStatus": "GROWING",
+        "isActive": true,
+        "createdAt": "2025-12-09T11:07:40",
+        "updatedAt": "2025-12-09T11:07:40"
+    }
+}
+```
+
+---
+
+### **STEP 22: Update Crop**
+
+Update an existing crop (e.g., change area, update status after sowing).
+
+#### Request
+
+- **Method:** `PUT`
+- **URL (Direct):** `http://localhost:4000/farmer/profile/crops/{cropId}`
+- **URL (Via Gateway):** `http://localhost:4004/farmer/profile/crops/{cropId}`
+- **Headers:**
+  ```
+  Content-Type: application/json
+  Authorization: Bearer {your-access-token}
+  ```
+- **Body:**
+  ```json
+  {
+      "farmId": 1,
+      "cropNameId": 1,
+      "areaAcres": 3.00,
+      "sowingDate": "2025-06-20",
+      "harvestingDate": "2025-10-20",
+      "cropStatus": "SOWN"
+  }
+  ```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop updated successfully",
+    "data": {
+        "id": 1,
+        "farmId": 1,
+        "farmName": "Main Farm",
+        "cropTypeId": 1,
+        "cropTypeName": "VEGETABLE",
+        "cropTypeDisplayName": "Vegetables",
+        "cropNameId": 1,
+        "cropName": "TOMATO",
+        "cropDisplayName": "Tomato",
+        "cropLocalName": "टमाटर",
+        "areaAcres": 3.00,
+        "sowingDate": "2025-06-20",
+        "harvestingDate": "2025-10-20",
+        "cropStatus": "SOWN",
+        "isActive": true,
+        "createdAt": "2025-12-09T11:07:40",
+        "updatedAt": "2025-12-09T11:15:00"
+    }
+}
+```
+
+---
+
+### **STEP 23: Delete Crop**
+
+Soft delete a crop (sets `isActive = false`).
+
+#### Request
+
+- **Method:** `DELETE`
+- **URL (Direct):** `http://localhost:4000/farmer/profile/crops/{cropId}`
+- **URL (Via Gateway):** `http://localhost:4004/farmer/profile/crops/{cropId}`
+- **Headers:**
+  ```
+  Authorization: Bearer {your-access-token}
+  ```
+
+#### Example
+
+```
+DELETE http://localhost:4000/farmer/profile/crops/1
+X-User-Id: 1
+```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop deleted successfully",
+    "data": null
+}
+```
+
+---
+
+### **STEP 24: Get Crop Count for Farm**
+
+Get the count of active crops for a specific farm.
+
+#### Request
+
+- **Method:** `GET`
+- **URL (Direct):** `http://localhost:4000/farmer/profile/crops/farm/{farmId}/count`
+- **URL (Via Gateway):** `http://localhost:4004/farmer/profile/crops/farm/{farmId}/count`
+- **Headers:**
+  ```
+  Authorization: Bearer {your-access-token}
+  ```
+
+#### Example
+
+```
+GET http://localhost:4000/farmer/profile/crops/farm/1/count
+X-User-Id: 1
+```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop count retrieved successfully",
+    "data": 3
+}
+```
+
+---
+
+### **STEP 25: Get Crops by Type**
+
+Get all crops of a specific type for the farmer.
+
+#### Request
+
+- **Method:** `GET`
+- **URL (Direct):** `http://localhost:4000/farmer/profile/crops/type/{cropTypeId}`
+- **URL (Via Gateway):** `http://localhost:4004/farmer/profile/crops/type/{cropTypeId}`
+- **Headers:**
+  ```
+  Authorization: Bearer {your-access-token}
+  ```
+
+#### Example
+
+```
+GET http://localhost:4000/farmer/profile/crops/type/1
+X-User-Id: 1
+```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crops retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "farmId": 1,
+            "farmName": "Main Farm",
+            "cropTypeId": 1,
+            "cropTypeName": "VEGETABLE",
+            "cropTypeDisplayName": "Vegetables",
+            "cropNameId": 1,
+            "cropName": "TOMATO",
+            "cropDisplayName": "Tomato",
+            "areaAcres": 2.50,
+            "sowingDate": "2025-06-15",
+            "harvestingDate": "2025-10-15",
+            "cropStatus": "GROWING",
+            "isActive": true
+        },
+        {
+            "id": 2,
+            "farmId": 1,
+            "farmName": "Main Farm",
+            "cropTypeId": 1,
+            "cropTypeName": "VEGETABLE",
+            "cropTypeDisplayName": "Vegetables",
+            "cropNameId": 2,
+            "cropName": "ONION",
+            "cropDisplayName": "Onion",
+            "areaAcres": 3.00,
+            "sowingDate": "2025-07-01",
+            "harvestingDate": "2025-11-15",
+            "cropStatus": "SOWN",
+            "isActive": true
+        }
+    ]
+}
+```
+
+---
+
+## 👨‍💼 Admin Endpoints - Crop Management
+
+These endpoints allow admins to manage crop types and names. Changes reflect immediately on the farmer app.
+
+---
+
+### **STEP 26: Admin - Get All Crop Types**
+
+Get all crop types including inactive ones (for admin panel).
+
+#### Request
+
+- **Method:** `GET`
+- **URL:** `http://localhost:4000/farmer/admin/crop-types`
+- **Headers:** None required
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop types retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "typeName": "VEGETABLE",
+            "displayName": "Vegetables",
+            "description": "Fresh vegetables...",
+            "displayOrder": 1,
+            "isActive": true,
+            "cropNameCount": 31
+        },
+        {
+            "id": 11,
+            "typeName": "NUTS_SEEDS",
+            "displayName": "Nuts & Seeds",
+            "description": "Edible nuts and seeds",
+            "displayOrder": 11,
+            "isActive": false,
+            "cropNameCount": 5
+        }
+    ]
+}
+```
+
+---
+
+### **STEP 27: Admin - Create Crop Type**
+
+Create a new crop type/category.
+
+#### Request
+
+- **Method:** `POST`
+- **URL:** `http://localhost:4000/farmer/admin/crop-types`
+- **Headers:**
+  ```
+  Content-Type: application/json
+  ```
+- **Body:**
+  ```json
+  {
+      "typeName": "ORGANIC_PRODUCE",
+      "displayName": "Organic Produce",
+      "description": "Certified organic farm products",
+      "displayOrder": 12,
+      "isActive": true
+  }
+  ```
+
+#### Field Descriptions
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `typeName` | String | Yes | Unique identifier (will be uppercased, spaces → underscores) |
+| `displayName` | String | Yes | Display name for UI |
+| `description` | String | No | Description of crop type |
+| `iconUrl` | String | No | S3 URL for icon |
+| `displayOrder` | Integer | No | Order in dropdown (lower = first) |
+| `isActive` | Boolean | No | Default: true |
+
+#### Expected Response (201 Created)
+
+```json
+{
+    "message": "Crop type created successfully",
+    "data": {
+        "id": 12,
+        "typeName": "ORGANIC_PRODUCE",
+        "displayName": "Organic Produce",
+        "description": "Certified organic farm products",
+        "iconUrl": null,
+        "displayOrder": 12,
+        "isActive": true,
+        "cropNameCount": 0,
+        "createdAt": "2025-12-09T12:00:00",
+        "updatedAt": "2025-12-09T12:00:00"
+    }
+}
+```
+
+---
+
+### **STEP 28: Admin - Update Crop Type**
+
+Update an existing crop type.
+
+#### Request
+
+- **Method:** `PUT`
+- **URL:** `http://localhost:4000/farmer/admin/crop-types/{id}`
+- **Headers:**
+  ```
+  Content-Type: application/json
+  ```
+- **Body:**
+  ```json
+  {
+      "typeName": "ORGANIC_PRODUCE",
+      "displayName": "Organic Products",
+      "description": "Certified organic farm products - Updated",
+      "displayOrder": 11,
+      "isActive": true
+  }
+  ```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop type updated successfully",
+    "data": {
+        "id": 12,
+        "typeName": "ORGANIC_PRODUCE",
+        "displayName": "Organic Products",
+        "description": "Certified organic farm products - Updated",
+        "displayOrder": 11,
+        "isActive": true,
+        "cropNameCount": 0,
+        "updatedAt": "2025-12-09T12:05:00"
+    }
+}
+```
+
+---
+
+### **STEP 29: Admin - Delete Crop Type**
+
+Soft delete a crop type (sets `isActive = false`).
+
+#### Request
+
+- **Method:** `DELETE`
+- **URL:** `http://localhost:4000/farmer/admin/crop-types/{id}`
+- **Headers:** None required
+
+#### Example
+
+```
+DELETE http://localhost:4000/farmer/admin/crop-types/12
+```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop type deleted successfully",
+    "data": null
+}
+```
+
+---
+
+### **STEP 30: Admin - Restore Crop Type**
+
+Restore a deleted crop type.
+
+#### Request
+
+- **Method:** `POST`
+- **URL:** `http://localhost:4000/farmer/admin/crop-types/{id}/restore`
+- **Headers:** None required
+
+#### Example
+
+```
+POST http://localhost:4000/farmer/admin/crop-types/12/restore
+```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop type restored successfully",
+    "data": {
+        "id": 12,
+        "typeName": "ORGANIC_PRODUCE",
+        "displayName": "Organic Products",
+        "isActive": true
+    }
+}
+```
+
+---
+
+### **STEP 31: Admin - Get Crop Names**
+
+Get all crop names for admin management.
+
+#### Request
+
+- **Method:** `GET`
+- **URL:** `http://localhost:4000/farmer/admin/crop-names`
+- **URL (filtered):** `http://localhost:4000/farmer/admin/crop-names?typeId=1`
+- **Headers:** None required
+- **Query Parameters:**
+  | Parameter | Required | Description |
+  |-----------|----------|-------------|
+  | `typeId` | No | Filter by crop type ID |
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop names retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "cropTypeId": 1,
+            "cropTypeName": "VEGETABLE",
+            "cropTypeDisplayName": "Vegetables",
+            "name": "TOMATO",
+            "displayName": "Tomato",
+            "localName": "टमाटर",
+            "displayOrder": 1,
+            "isActive": true
+        },
+        {
+            "id": 2,
+            "cropTypeId": 1,
+            "cropTypeName": "VEGETABLE",
+            "cropTypeDisplayName": "Vegetables",
+            "name": "ONION",
+            "displayName": "Onion",
+            "localName": "कांदा",
+            "displayOrder": 2,
+            "isActive": true
+        }
+    ]
+}
+```
+
+---
+
+### **STEP 32: Admin - Create Crop Name**
+
+Create a new crop name under a crop type.
+
+#### Request
+
+- **Method:** `POST`
+- **URL:** `http://localhost:4000/farmer/admin/crop-names`
+- **Headers:**
+  ```
+  Content-Type: application/json
+  ```
+- **Body:**
+  ```json
+  {
+      "cropTypeId": 1,
+      "name": "BITTER_MELON",
+      "displayName": "Bitter Melon",
+      "localName": "कारेले",
+      "description": "Green bitter vegetable",
+      "displayOrder": 50,
+      "isActive": true
+  }
+  ```
+
+#### Field Descriptions
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `cropTypeId` | Long | Yes | Parent crop type ID |
+| `name` | String | Yes | Unique name within type (will be uppercased) |
+| `displayName` | String | Yes | Display name for UI |
+| `localName` | String | No | Local/Regional name (e.g., Marathi, Hindi) |
+| `description` | String | No | Description of crop |
+| `iconUrl` | String | No | S3 URL for icon |
+| `displayOrder` | Integer | No | Order in dropdown |
+| `isActive` | Boolean | No | Default: true |
+
+#### Expected Response (201 Created)
+
+```json
+{
+    "message": "Crop name created successfully",
+    "data": {
+        "id": 145,
+        "cropTypeId": 1,
+        "cropTypeName": "VEGETABLE",
+        "cropTypeDisplayName": "Vegetables",
+        "name": "BITTER_MELON",
+        "displayName": "Bitter Melon",
+        "localName": "कारेले",
+        "description": "Green bitter vegetable",
+        "iconUrl": null,
+        "displayOrder": 50,
+        "isActive": true,
+        "createdAt": "2025-12-09T12:10:00",
+        "updatedAt": "2025-12-09T12:10:00"
+    }
+}
+```
+
+---
+
+### **STEP 33: Admin - Update Crop Name**
+
+Update an existing crop name.
+
+#### Request
+
+- **Method:** `PUT`
+- **URL:** `http://localhost:4000/farmer/admin/crop-names/{id}`
+- **Headers:**
+  ```
+  Content-Type: application/json
+  ```
+- **Body:**
+  ```json
+  {
+      "cropTypeId": 1,
+      "name": "BITTER_MELON",
+      "displayName": "Bitter Melon (Karela)",
+      "localName": "कारेला",
+      "displayOrder": 17,
+      "isActive": true
+  }
+  ```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop name updated successfully",
+    "data": {
+        "id": 145,
+        "cropTypeId": 1,
+        "name": "BITTER_MELON",
+        "displayName": "Bitter Melon (Karela)",
+        "localName": "कारेला",
+        "displayOrder": 17,
+        "isActive": true,
+        "updatedAt": "2025-12-09T12:15:00"
+    }
+}
+```
+
+---
+
+### **STEP 34: Admin - Delete Crop Name**
+
+Soft delete a crop name.
+
+#### Request
+
+- **Method:** `DELETE`
+- **URL:** `http://localhost:4000/farmer/admin/crop-names/{id}`
+- **Headers:** None required
+
+#### Example
+
+```
+DELETE http://localhost:4000/farmer/admin/crop-names/145
+```
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop name deleted successfully",
+    "data": null
+}
+```
+
+---
+
+### **STEP 35: Admin - Restore Crop Name**
+
+Restore a deleted crop name.
+
+#### Request
+
+- **Method:** `POST`
+- **URL:** `http://localhost:4000/farmer/admin/crop-names/{id}/restore`
+- **Headers:** None required
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop name restored successfully",
+    "data": {
+        "id": 145,
+        "name": "BITTER_MELON",
+        "displayName": "Bitter Melon (Karela)",
+        "isActive": true
+    }
+}
+```
+
+---
+
+### **STEP 36: Admin - Search Crop Names**
+
+Search crop names by term (for admin panel search).
+
+#### Request
+
+- **Method:** `GET`
+- **URL:** `http://localhost:4000/farmer/admin/crop-names/search?term=mango`
+- **Headers:** None required
+
+#### Expected Response
+
+```json
+{
+    "message": "Crop names retrieved successfully",
+    "data": [
+        {
+            "id": 33,
+            "cropTypeId": 2,
+            "cropTypeName": "FRUIT",
+            "cropTypeDisplayName": "Fruits",
+            "name": "MANGO",
+            "displayName": "Mango",
+            "localName": "आंबा",
+            "isActive": true
+        }
+    ]
+}
+```
+
+---
+
+## 🔍 Crop Error Scenarios to Test
+
+### 1. Crop Area Exceeds Farm Size
+
+**Request:**
+```
+POST http://localhost:4000/farmer/profile/crops
+X-User-Id: 1
+Body:
+{
+    "farmId": 1,
+    "cropNameId": 1,
+    "areaAcres": 100.00
+}
+```
+
+**Expected Response (400 Bad Request):**
+```json
+{
+    "message": "Total crop area (100.00 acres) cannot exceed farm area (10.50 acres). Available area: 4.00 acres",
+    "data": null
+}
+```
+
+### 2. Duplicate Crop on Same Farm
+
+**Request:**
+```
+POST http://localhost:4000/farmer/profile/crops
+X-User-Id: 1
+Body:
+{
+    "farmId": 1,
+    "cropNameId": 1,
+    "areaAcres": 2.00
+}
+```
+
+**Expected Response (if Tomato already exists on farm 1):**
+```json
+{
+    "message": "This crop already exists on this farm. Please update the existing crop instead.",
+    "data": null
+}
+```
+
+### 3. Invalid Crop Name ID
+
+**Request:**
+```
+POST http://localhost:4000/farmer/profile/crops
+X-User-Id: 1
+Body:
+{
+    "farmId": 1,
+    "cropNameId": 9999,
+    "areaAcres": 2.00
+}
+```
+
+**Expected Response:**
+```json
+{
+    "message": "Crop name not found or inactive with ID: 9999",
+    "data": null
+}
+```
+
+### 4. Crop Not Found
+
+**Request:**
+```
+GET http://localhost:4000/farmer/profile/crops/999
+X-User-Id: 1
+```
+
+**Expected Response:**
+```json
+{
+    "message": "Crop not found with ID: 999",
+    "data": null
+}
+```
+
+### 5. Admin - Duplicate Crop Type Name
+
+**Request:**
+```
+POST http://localhost:4000/farmer/admin/crop-types
+Body:
+{
+    "typeName": "VEGETABLE",
+    "displayName": "Veggies"
+}
+```
+
+**Expected Response:**
+```json
+{
+    "message": "Crop type with name 'VEGETABLE' already exists",
+    "data": null
+}
+```
+
+### 6. Admin - Duplicate Crop Name in Same Type
+
+**Request:**
+```
+POST http://localhost:4000/farmer/admin/crop-names
+Body:
+{
+    "cropTypeId": 1,
+    "name": "TOMATO",
+    "displayName": "Tomato Red"
+}
+```
+
+**Expected Response:**
+```json
+{
+    "message": "Crop name 'TOMATO' already exists for this crop type",
+    "data": null
+}
+```
+
+---
+
+## ✅ CropRequest Validation Rules
+
+| Field | Rules |
+|-------|-------|
+| `farmId` | Required, Must be valid farm ID owned by user |
+| `cropNameId` | Required, Must be active crop name ID |
+| `areaAcres` | Required, Must be > 0, Cannot exceed farm's available area |
+| `sowingDate` | Optional, Date format: YYYY-MM-DD |
+| `harvestingDate` | Optional, Date format: YYYY-MM-DD |
+| `cropStatus` | Optional, One of: PLANNED, SOWN, GROWING, HARVESTED, FAILED (default: PLANNED) |
+
+---
+
+## 📊 Pre-Seeded Crop Data Summary
+
+| Crop Type | Display Name | Crop Names Count |
+|-----------|--------------|------------------|
+| VEGETABLE | Vegetables | 31 |
+| FRUIT | Fruits | 26 |
+| GRAIN_CEREAL | Grains & Cereals | 9 |
+| PULSES_LEGUMES | Pulses & Legumes | 12 |
+| SPICES | Spices | 16 |
+| OILSEEDS | Oilseeds | 10 |
+| CASH_CROPS | Cash Crops | 8 |
+| DAIRY_MILK | Dairy & Milk Products | 10 |
+| FLOWERS | Flowers | 11 |
+| MEDICINAL_HERBS | Medicinal & Herbs | 11 |
+| **Total** | **10 Types** | **144 Crop Names** |
+
+---
+
+## 🎯 Complete Crop Testing Flow
+
+### Recommended Test Order:
+
+1. ✅ **Get Crop Types** - Verify 10+ types exist
+2. ✅ **Get Crop Names (Vegetables)** - Verify dropdown data
+3. ✅ **Search Crop Names** - Test autocomplete
+4. ✅ **Create Crop (Tomato)** - Add first crop
+5. ✅ **Create Crop (Onion)** - Add second crop
+6. ✅ **Create Crop (Mango - Fruit)** - Add crop from different type
+7. ✅ **Get All Crops** - Verify all crops shown
+8. ✅ **Get Crops by Farm** - Verify farm-specific crops
+9. ✅ **Get Crop by ID** - Verify specific crop
+10. ✅ **Update Crop** - Modify area
+11. ✅ **Test Area Validation** - Try to exceed farm size
+12. ✅ **Test Duplicate Prevention** - Try to add same crop again
+13. ✅ **Delete Crop** - Soft delete
+14. ✅ **Get Crop Count** - Verify count decreased
+
+### Admin Testing:
+
+15. ✅ **Admin: Get All Types** - Verify admin view
+16. ✅ **Admin: Create Type** - Add new category
+17. ✅ **Admin: Create Name** - Add crop to new category
+18. ✅ **Verify Farmer Dropdown** - New type appears
+19. ✅ **Admin: Delete Type** - Soft delete
+20. ✅ **Admin: Restore Type** - Restore deleted
+21. ✅ **Test Admin Validations** - Duplicates, etc.
+
 ---
 
 **Happy Testing! 🚀**
-
