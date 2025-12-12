@@ -24,7 +24,6 @@ public class Crop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "crop_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

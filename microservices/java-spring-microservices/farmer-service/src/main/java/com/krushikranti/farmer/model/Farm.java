@@ -23,7 +23,6 @@ public class Farm {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "farm_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

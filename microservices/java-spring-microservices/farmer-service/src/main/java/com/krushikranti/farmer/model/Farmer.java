@@ -19,7 +19,6 @@ public class Farmer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "farmer_id")
     private Long id;
 
     @Column(name = "user_id", unique = true, nullable = false)
