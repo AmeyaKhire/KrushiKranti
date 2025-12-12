@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Table(name = "crop_names", 
        uniqueConstraints = @UniqueConstraint(
            name = "uk_crop_name_per_type", 
-           columnNames = {"crop_type_id", "name"}))
+           columnNames = {"crop_type_id", "crop_name"}))
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,13 +26,14 @@ public class CropName {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "crop_name_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crop_type_id", nullable = false)
     private CropType cropType;
 
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "crop_name", nullable = false, length = 100)
     private String name;
 
     @Column(name = "display_name", nullable = false, length = 150)

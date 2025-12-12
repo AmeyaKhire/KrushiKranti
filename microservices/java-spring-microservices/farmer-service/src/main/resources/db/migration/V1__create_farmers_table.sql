@@ -16,6 +16,10 @@ CREATE TABLE IF NOT EXISTS farmers (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+
+
+
 -- Create indexes
 CREATE INDEX idx_farmers_user_id ON farmers(user_id);
 CREATE INDEX idx_farmers_pincode ON farmers(pincode);

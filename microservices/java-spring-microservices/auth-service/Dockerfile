@@ -8,6 +8,7 @@ COPY pom.xml .
 # Copy all module pom files (needed for Maven to resolve parent pom)
 COPY api-gateway/pom.xml ./api-gateway/
 COPY auth-service/pom.xml ./auth-service/
+COPY farmer-service/pom.xml ./farmer-service/
 
 # Download dependencies for auth-service
 RUN mvn dependency:go-offline -pl :auth-service -am -DskipTests

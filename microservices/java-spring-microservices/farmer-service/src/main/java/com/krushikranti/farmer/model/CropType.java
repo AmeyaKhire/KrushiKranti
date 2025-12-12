@@ -24,6 +24,7 @@ public class CropType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "crop_type_id")
     private Long id;
 
     @Column(name = "type_name", nullable = false, unique = true, length = 50)
