@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/http_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -18,6 +19,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController phoneController = TextEditingController();
 
   String appLang = "en"; // default
+  bool _isLoading = false;
 
   String? usernameError; // ✅ ADDED: Username Error
   String? emailError;
@@ -145,29 +147,56 @@ class _SignUpScreenState extends State<SignUpScreen> {
         passwordError == null && 
         phoneError == null) {
       
-      // 1. Save Auth Details (Email/Phone)
-      await StorageService.saveAuthDetails(
-        email: emailController.text.trim(),
-        phone: phoneController.text.trim(),
-      );
+      setState(() {
+        _isLoading = true;
+      });
 
-      // 2. Save Username as First Name initially (so Profile isn't empty)
-      // We pass empty strings for DOB/Gender as placeholders
-      await StorageService.savePersonalDetails(
-        firstName: usernameController.text.trim(),
-        lastName: "", 
-        dob: "", 
-        gender: "",
-        profilePicPath: null,
-      );
+      try {
+        // 1. Call /auth/register endpoint
+        final response = await HttpService.post(
+          "auth/register",
+          {
+            "username": usernameController.text.trim(),
+            "email": emailController.text.trim(),
+            "phoneNumber": phoneController.text.trim(),
+            "password": passwordController.text.trim(),
+            "role": "FARMER",
+          },
+        );
 
-      // 3. Save Mock Token
-      await StorageService.saveToken("mock_token_123");
+        // 2. Save Auth Details (Email/Phone) for OTP screen
+        await StorageService.saveAuthDetails(
+          email: emailController.text.trim(),
+          phone: phoneController.text.trim(),
+        );
 
-      if (!mounted) return;
-      
-      // 4. Navigate to OTP (Pass 'false' because this is Signup)
-      Navigator.pushNamed(context, AppRoutes.otp, arguments: false);
+        // 3. Save Username as First Name initially (so Profile isn't empty)
+        await StorageService.savePersonalDetails(
+          firstName: usernameController.text.trim(),
+          lastName: "",
+          dob: "",
+          gender: "",
+          profilePicPath: null,
+        );
+
+        if (!mounted) return;
+
+        // 4. Navigate to OTP (Pass 'false' because this is Signup)
+        Navigator.pushNamed(context, AppRoutes.otp, arguments: false);
+      } catch (e) {
+        if (!mounted) return;
+
+        setState(() {
+          _isLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceFirst("Exception: ", "")),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -268,14 +297,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    onPressed: validateForm, // ✅ Calls updated validation
-                    child: Text(
-                      translations[appLang]!["getOtp"]!,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    onPressed: _isLoading ? null : validateForm, // ✅ Calls updated validation
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                            ),
+                          )
+                        : Text(
+                            translations[appLang]!["getOtp"]!,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
 

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
+import '../../../core/constants/api_endpoints.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/http_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController phoneController = TextEditingController();
   String countryCode = "+91";
   String appLang = "en";
+  bool _isLoading = false;
 
   String? phoneErrorText;
 
@@ -237,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
-                          onPressed: () async {
+                          onPressed: _isLoading ? null : () async {
                             final phone = phoneController.text.trim();
 
                             if (!validatePhoneNumber(phone)) {
@@ -246,20 +249,67 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                               return;
                             }
-                            
-                            // 1. Perform Async Operation
-                            await StorageService.saveLanguage(appLang);
 
-                            // 2. ✅ CHECK CONTEXT BEFORE NAVIGATING
-                            if (!context.mounted) return;
+                            setState(() {
+                              _isLoading = true;
+                              phoneErrorText = null;
+                            });
 
-                            // 3. Navigate safely
-                            Navigator.pushNamed(context, AppRoutes.otp, arguments: true);
+                            try {
+                              // 1. Save language preference
+                              await StorageService.saveLanguage(appLang);
+
+                              // 2. Save phone number for OTP screen
+                              await StorageService.saveAuthDetails(
+                                email: "",
+                                phone: phone,
+                              );
+
+                              // 3. Request OTP from backend
+                              final response = await HttpService.post(
+                                "auth/request-login-otp",
+                                {"phoneNumber": phone},
+                              );
+
+                              if (!mounted) return;
+
+                              // 4. Navigate to OTP screen (pass true for login flow)
+                              Navigator.pushNamed(context, AppRoutes.otp, arguments: true);
+                            } catch (e) {
+                              if (!mounted) return;
+                              
+                              setState(() {
+                                _isLoading = false;
+                                phoneErrorText = e.toString().replaceFirst("Exception: ", "");
+                              });
+                              
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.toString().replaceFirst("Exception: ", "")),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            } finally {
+                              if (mounted) {
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              }
+                            }
                           },
-                          child: Text(
-                            translations[appLang]!["otpBtn"]!,
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
+                          child: _isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                                  ),
+                                )
+                              : Text(
+                                  translations[appLang]!["otpBtn"]!,
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
 

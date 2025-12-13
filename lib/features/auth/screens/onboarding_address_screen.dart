@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:krushikranti_farmer/core/constants/app_colors.dart';
 import 'package:krushikranti_farmer/core/constants/app_routes.dart';
 import 'package:krushikranti_farmer/core/services/storage_service.dart';
+import '../../../core/services/http_service.dart';
 
 class OnboardingAddressScreen extends StatefulWidget {
   const OnboardingAddressScreen({super.key});
@@ -13,6 +14,8 @@ class OnboardingAddressScreen extends StatefulWidget {
 
 class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
   String appLang = "en";
+  bool _isLoading = false;
+  bool _isLookingUp = false;
 
   final TextEditingController pincodeController = TextEditingController();
   final TextEditingController talukaController = TextEditingController();
@@ -20,14 +23,7 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
   final TextEditingController stateController = TextEditingController();
 
   String? selectedVillage;
-
-  final List<String> villageList = [
-    "Pune",
-    "Lohegaon",
-    "Wakad",
-    "Kolhapur",
-    "Baner",
-  ];
+  List<String> villageList = [];
 
   final Map<String, Map<String, String>> t = {
     "en": {
@@ -74,6 +70,142 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
   Future<void> loadLanguage() async {
     String? lang = await StorageService.getLanguage();
     setState(() => appLang = lang ?? "en");
+  }
+
+  Future<void> _saveAndContinue() async {
+    // Validate required fields
+    if (pincodeController.text.trim().isEmpty || selectedVillage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter pincode and select village"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Get personal details from storage
+      final userData = await StorageService.getUserDetails();
+      final firstName = userData['firstName'] ?? "";
+      final lastName = userData['lastName'] ?? "";
+      final dob = userData['dob'] ?? "";
+      final gender = userData['gender'] ?? "";
+      final altPhone = userData['altPhone'] ?? "";
+
+      // Parse date from DD/MM/YYYY to YYYY-MM-DD
+      String dateOfBirth = "";
+      if (dob.isNotEmpty) {
+        try {
+          final parts = dob.split("/");
+          if (parts.length == 3) {
+            dateOfBirth = "${parts[2]}-${parts[1].padLeft(2, '0')}-${parts[0].padLeft(2, '0')}";
+          }
+        } catch (e) {
+          throw Exception("Invalid date format. Please use DD/MM/YYYY");
+        }
+      }
+
+      // Map gender string to backend enum
+      String genderValue = "MALE"; // Default
+      if (gender.toUpperCase() == "FEMALE") {
+        genderValue = "FEMALE";
+      } else if (gender.toUpperCase() == "OTHER") {
+        genderValue = "OTHER";
+      }
+
+      // Prepare request body
+      final requestBody = {
+        "firstName": firstName,
+        "lastName": lastName,
+        "dateOfBirth": dateOfBirth,
+        "gender": genderValue,
+        "alternatePhone": altPhone.isEmpty ? null : altPhone,
+        "pincode": pincodeController.text.trim(),
+        "village": selectedVillage!,
+      };
+
+      // Call PUT /farmer/profile/my-details
+      final response = await HttpService.put(
+        "farmer/profile/my-details",
+        requestBody,
+      );
+
+      if (!mounted) return;
+
+      // Navigate to Dashboard
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.dashboard,
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString().replaceFirst("Exception: ", "")),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _lookupAddress() async {
+    final pincode = pincodeController.text.trim();
+    
+    if (pincode.length != 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter a valid 6-digit pincode"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLookingUp = true;
+    });
+
+    try {
+      final response = await HttpService.get("farmer/profile/address/lookup?pincode=$pincode");
+      final data = response['data'] ?? {};
+      
+      if (mounted && data.isNotEmpty) {
+        setState(() {
+          districtController.text = data['district'] ?? "";
+          talukaController.text = data['taluka'] ?? "";
+          stateController.text = data['state'] ?? "";
+          villageList = List<String>.from(data['villages'] ?? []);
+          selectedVillage = null; // Reset selection
+          _isLookingUp = false;
+        });
+      } else {
+        throw Exception("No address found for this pincode");
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLookingUp = false;
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceFirst("Exception: ", "")),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -170,7 +302,34 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
               const SizedBox(height: 20),
 
               _label(t[appLang]!["pincode"]!),
-              _textField(pincodeController, t[appLang]!["pincode"]!),
+              Row(
+                children: [
+                  Expanded(
+                    child: _textField(pincodeController, t[appLang]!["pincode"]!),
+                  ),
+                  const SizedBox(width: 10),
+                  _isLookingUp
+                      ? const SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: Center(
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        )
+                      : ElevatedButton(
+                          onPressed: _lookupAddress,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.brandGreen,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text("Lookup"),
+                        ),
+                ],
+              ),
 
               const SizedBox(height: 16),
 
@@ -180,17 +339,17 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
               const SizedBox(height: 16),
 
               _label(t[appLang]!["taluka"]!),
-              _textField(talukaController, t[appLang]!["taluka"]!),
+              _textField(talukaController, t[appLang]!["taluka"]!, enabled: false),
 
               const SizedBox(height: 16),
 
               _label(t[appLang]!["district"]!),
-              _textField(districtController, t[appLang]!["district"]!),
+              _textField(districtController, t[appLang]!["district"]!, enabled: false),
 
               const SizedBox(height: 16),
 
               _label(t[appLang]!["state"]!),
-              _textField(stateController, t[appLang]!["state"]!),
+              _textField(stateController, t[appLang]!["state"]!, enabled: false),
 
               const SizedBox(height: 30),
 
@@ -204,17 +363,24 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.dashboard);
-                  },
-                  child: Text(
-                    t[appLang]!["done"]!,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  onPressed: _isLoading ? null : _saveAndContinue,
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                          ),
+                        )
+                      : Text(
+                          t[appLang]!["done"]!,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               )
             ],
@@ -224,19 +390,30 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
     );
   }
 
-  Widget _textField(TextEditingController controller, String hint) {
+  Widget _textField(TextEditingController controller, String hint, {bool enabled = true}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: enabled ? Colors.grey.shade100 : Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
         controller: controller,
+        enabled: enabled,
+        keyboardType: hint.toLowerCase().contains("pincode") ? TextInputType.number : TextInputType.text,
+        maxLength: hint.toLowerCase().contains("pincode") ? 6 : null,
         decoration: InputDecoration(
           hintText: hint,
           border: InputBorder.none,
+          counterText: "",
         ),
+        onChanged: hint.toLowerCase().contains("pincode") && enabled
+            ? (value) {
+                if (value.length == 6) {
+                  _lookupAddress();
+                }
+              }
+            : null,
       ),
     );
   }
@@ -259,12 +436,16 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: villageList.isEmpty ? Colors.grey.shade200 : Colors.grey.shade100,
         borderRadius: BorderRadius.circular(10),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          hint: Text(t[appLang]!["village"]!),
+          hint: Text(
+            villageList.isEmpty 
+                ? "Enter pincode to load villages" 
+                : t[appLang]!["village"]!,
+          ),
           value: selectedVillage,
           isExpanded: true,
           items: villageList.map((v) {
@@ -273,7 +454,7 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
               child: Text(v),
             );
           }).toList(),
-          onChanged: (v) {
+          onChanged: villageList.isEmpty ? null : (v) {
             setState(() => selectedVillage = v);
           },
         ),

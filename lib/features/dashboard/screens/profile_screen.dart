@@ -5,6 +5,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/http_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -16,7 +17,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String userName = "Loading...";
   String userEmail = "";
-  String userPicPath = ""; 
+  String userPicPath = "";
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -25,7 +27,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadUserData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
+      // Try to fetch from API first
+      try {
+        final response = await HttpService.get("farmer/profile/my-details");
+        final data = response['data'] ?? {};
+        
+        if (mounted && data.isNotEmpty) {
+          setState(() {
+            String first = data['firstName'] ?? "";
+            String last = data['lastName'] ?? "";
+            
+            if (first.isEmpty && last.isEmpty) {
+              userName = "Guest Farmer";
+            } else {
+              userName = "$first $last";
+            }
+
+            userEmail = data['email'] ?? "";
+            userPicPath = ""; // Profile pic path not in API response yet
+            _isLoading = false;
+          });
+          
+          // Also update local storage
+          await StorageService.saveAuthDetails(
+            email: data['email'] ?? "",
+            phone: data['phoneNumber'] ?? "",
+          );
+          await StorageService.savePersonalDetails(
+            firstName: data['firstName'] ?? "",
+            lastName: data['lastName'] ?? "",
+            dob: data['dateOfBirth']?.toString() ?? "",
+            gender: data['gender']?.toString() ?? "",
+            profilePicPath: null,
+          );
+          return;
+        }
+      } catch (apiError) {
+        // If API fails, fall back to local storage
+        print("API Error: $apiError");
+      }
+
+      // Fallback to local storage
       final userData = await StorageService.getUserDetails();
       
       if (mounted) {
@@ -41,6 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           userEmail = userData['email'] ?? "";
           userPicPath = userData['pic'] ?? "";
+          _isLoading = false;
         });
       }
     } catch (e) {
@@ -48,6 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         setState(() {
           userName = "Guest Farmer";
           userEmail = "No Email";
+          _isLoading = false;
         });
       }
     }
@@ -122,6 +171,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildProfileHeader() {
     bool hasImage = userPicPath.isNotEmpty && File(userPicPath).existsSync();
+
+    if (_isLoading) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Row(
       children: [

@@ -1,29 +1,44 @@
 class CropModel {
   final String id;
-  final String name;      // e.g., "Tomato" [cite: 47]
-  final String category;  // "Vegetable", "Fruit", "Grain" [cite: 46, 61, 71]
+  final String name;      // e.g., "Tomato" or displayName
+  final String category;  // Crop type name (e.g., "Vegetables", "Fruits")
   final double acres;     // How much land is used
-  final DateTime plantingDate;
+  final DateTime? plantingDate; // Sowing date
   final String? imageUrl; // For the photo
+  final String? cropTypeName; // Full crop type name
+  final String? cropDisplayName; // Display name from backend
 
   CropModel({
     required this.id,
     required this.name,
     required this.category,
     required this.acres,
-    required this.plantingDate,
+    this.plantingDate,
     this.imageUrl,
+    this.cropTypeName,
+    this.cropDisplayName,
   });
 
   // Factory for API
   factory CropModel.fromJson(Map<String, dynamic> json) {
+    DateTime? parseDate(String? dateStr) {
+      if (dateStr == null || dateStr.isEmpty) return null;
+      try {
+        return DateTime.parse(dateStr);
+      } catch (e) {
+        return null;
+      }
+    }
+
     return CropModel(
-      id: json['id'],
-      name: json['name'],
-      category: json['category'],
-      acres: json['acres']?.toDouble() ?? 0.0,
-      plantingDate: DateTime.parse(json['plantingDate']),
-      imageUrl: json['imageUrl'],
+      id: json['id']?.toString() ?? '',
+      name: json['cropDisplayName'] ?? json['cropName'] ?? '',
+      category: json['cropTypeDisplayName'] ?? json['cropTypeName'] ?? '',
+      acres: (json['areaAcres'] ?? 0.0).toDouble(),
+      plantingDate: parseDate(json['sowingDate']),
+      imageUrl: json['iconUrl'],
+      cropTypeName: json['cropTypeName'],
+      cropDisplayName: json['cropDisplayName'] ?? json['cropName'],
     );
   }
 }

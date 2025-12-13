@@ -5,6 +5,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/http_service.dart';
 
 class EmailLoginScreen extends StatefulWidget {
   const EmailLoginScreen({super.key});
@@ -32,28 +33,53 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
 
     setState(() => _isLoading = true);
 
-    // Simulate API Call
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      // Call /auth/login endpoint with email/password
+      final response = await HttpService.post(
+        "auth/login",
+        {
+          "email": _emailController.text.trim(),
+          "password": _passwordController.text.trim(),
+        },
+      );
 
-    // Save Dummy Token
-    await StorageService.saveToken("email_login_token_123");
+      // Extract token and user info from response
+      final String accessToken = response['accessToken'] ?? '';
+      final userInfo = response['user'] ?? {};
 
-    // Also save email for profile display
-    await StorageService.saveAuthDetails(
-      email: _emailController.text.trim(),
-      phone: "", 
-    );
+      if (accessToken.isEmpty) {
+        throw Exception("Login failed. Please try again.");
+      }
 
-    setState(() => _isLoading = false);
+      // Save token and user details
+      await StorageService.saveToken(accessToken);
+      await StorageService.saveAuthDetails(
+        email: userInfo['email'] ?? _emailController.text.trim(),
+        phone: userInfo['phoneNumber'] ?? "",
+      );
 
-    if (!mounted) return;
-    
-    // Navigate to Dashboard
-    Navigator.pushNamedAndRemoveUntil(
-      context, 
-      AppRoutes.dashboard, 
-      (route) => false
-    );
+      if (!mounted) return;
+
+      // Navigate to Dashboard
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.dashboard,
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString().replaceFirst("Exception: ", "")),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override

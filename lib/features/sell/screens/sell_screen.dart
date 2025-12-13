@@ -126,7 +126,7 @@ class _SellScreenState extends State<SellScreen> {
               _buildLabel(l10n.cropTypeLabel),
               DropdownButtonFormField<String>(
                 key: ValueKey(_selectedCategory ?? 'cat_empty'),
-                initialValue: _selectedCategory,
+                value: _selectedCategory,
                 decoration: _inputDecoration(l10n.selectCategory),
                 icon: const Icon(Icons.keyboard_arrow_down),
                 items: _categories.map((cat) {
@@ -146,7 +146,7 @@ class _SellScreenState extends State<SellScreen> {
               _buildLabel(l10n.selectCropLabel),
               DropdownButtonFormField<String>(
                 key: ValueKey('crop_$_selectedCategory'), 
-                initialValue: _selectedCrop,
+                value: _selectedCrop,
                 decoration: _inputDecoration(l10n.selectCropHint),
                 icon: const Icon(Icons.keyboard_arrow_down),
                 items: _selectedCategory == null 
@@ -188,7 +188,7 @@ class _SellScreenState extends State<SellScreen> {
                         DropdownButtonFormField<String>(
                           // ✅ 3. isExpanded prevents overflow if text is long
                           isExpanded: true,
-                          initialValue: _selectedUnit,
+                          value: _selectedUnit,
                           decoration: _inputDecoration("Unit"),
                           icon: const Icon(Icons.keyboard_arrow_down),
                           items: _units.map((u) => DropdownMenuItem(value: u, child: Text(u))).toList(),

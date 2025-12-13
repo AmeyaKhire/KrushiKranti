@@ -28,36 +28,14 @@ class _CropListScreenState extends State<CropListScreen> {
     });
   }
 
-  // ✅ HELPER 1: Translate Category (Vegetables -> भाजीपाला)
-  String _getCategoryDisplay(String key, AppLocalizations l10n) {
-    switch (key) {
-      case "Vegetables": return l10n.catVeg;
-      case "Fruits": return l10n.catFruit;
-      case "Grains": return l10n.catGrain;
-      default: return key;
-    }
+  // Helper to get display name (use displayName from API, fallback to name)
+  String _getCropDisplay(CropModel crop, AppLocalizations l10n) {
+    return crop.cropDisplayName ?? crop.name;
   }
 
-  // ✅ HELPER 2: Translate Crop Name (Tomato -> टोमॅटो)
-  String _getCropDisplay(String key, AppLocalizations l10n) {
-    switch (key) {
-      case "Tomato": return l10n.cropTomato;
-      case "Onion": return l10n.cropOnion;
-      case "Potato": return l10n.cropPotato;
-      case "Cauliflower": return l10n.cropCauliflower;
-      case "Brinjal": return l10n.cropBrinjal;
-      case "Okra": return l10n.cropOkra;
-      case "Banana": return l10n.cropBanana;
-      case "Mango": return l10n.cropMango;
-      case "Papaya": return l10n.cropPapaya;
-      case "Pomegranate": return l10n.cropPomegranate;
-      case "Grapes": return l10n.cropGrapes;
-      case "Wheat": return l10n.cropWheat;
-      case "Rice": return l10n.cropRice;
-      case "Jowar": return l10n.cropJowar;
-      case "Bajra": return l10n.cropBajra;
-      default: return key;
-    }
+  // Helper to get category display name
+  String _getCategoryDisplay(CropModel crop, AppLocalizations l10n) {
+    return crop.cropTypeName ?? crop.category;
   }
 
   @override
@@ -98,7 +76,28 @@ class _CropListScreenState extends State<CropListScreen> {
               return const Center(child: CircularProgressIndicator(color: AppColors.brandGreen));
             }
             if (snapshot.hasError) {
-              return Center(child: Text("Error: ${snapshot.error}"));
+              final errorMsg = snapshot.error.toString();
+              // Check if it's a profile not found error
+              if (errorMsg.contains("Farmer profile not found") || errorMsg.contains("complete your profile")) {
+                return _buildProfileRequiredState(l10n);
+              }
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                      const SizedBox(height: 16),
+                      Text(
+                        "Error: ${snapshot.error}",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ],
+                  ),
+                ),
+              );
             }
 
             final crops = snapshot.data ?? [];
@@ -171,7 +170,7 @@ class _CropListScreenState extends State<CropListScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _getCropDisplay(crop.name, l10n), // ✅ Translated Name (e.g. टोमॅटो)
+                  _getCropDisplay(crop, l10n),
                   style: GoogleFonts.poppins(
                     fontSize: 16, 
                     fontWeight: FontWeight.w700,
@@ -180,8 +179,7 @@ class _CropListScreenState extends State<CropListScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  // ✅ Translated Category + Acres
-                  "${_getCategoryDisplay(crop.category, l10n)} • ${crop.acres} ${l10n.acresSuffix}",
+                  "${_getCategoryDisplay(crop, l10n)} • ${crop.acres.toStringAsFixed(2)} ${l10n.acresSuffix}",
                   style: GoogleFonts.poppins(
                     fontSize: 12, 
                     fontWeight: FontWeight.w600,
@@ -223,6 +221,66 @@ class _CropListScreenState extends State<CropListScreen> {
             style: GoogleFonts.poppins(color: Colors.grey, fontSize: 14),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProfileRequiredState(AppLocalizations l10n) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: const BoxDecoration(
+                color: AppColors.creamBackground,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.person_add, size: 64, color: AppColors.brandGreen),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              "Profile Required",
+              style: GoogleFonts.poppins(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              "Please complete your profile first before adding crops.",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.onboardingPersonal);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.brandGreen,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                "Complete Profile",
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
