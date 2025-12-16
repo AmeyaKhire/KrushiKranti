@@ -19,11 +19,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String userEmail = "";
   String userPicPath = "";
   bool _isLoading = true;
+  bool _isSubscribed = false;
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _checkSubscriptionStatus();
+  }
+
+  Future<void> _checkSubscriptionStatus() async {
+    final isSubscribed = await StorageService.isSubscribed();
+    if (mounted) {
+      setState(() {
+        _isSubscribed = isSubscribed;
+      });
+    }
   }
 
   Future<void> _loadUserData() async {
@@ -113,10 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
+        automaticallyImplyLeading: false, // Remove back button
         title: Text(
           l10n.krushiKranti, 
           style: GoogleFonts.poppins(
@@ -136,14 +144,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
             
             const SizedBox(height: 40), // Increased spacing
             
-            // --- 2. MENU LIST ---
-            _buildMenuItem(Icons.badge_outlined, l10n.myDetails, onTap: () {}),
+            // --- 2. MENU LIST (Ordered as requested) ---
+            // 1. My Details
+            _buildMenuItem(Icons.badge_outlined, l10n.myDetails, onTap: () {
+              Navigator.pushNamed(context, AppRoutes.myDetails);
+            }),
             _buildDivider(),
-            
+
+            // 2. Farm Details
+            _buildMenuItem(Icons.agriculture_outlined, l10n.farmDetails, onTap: () {
+              Navigator.pushNamed(context, AppRoutes.farmList);
+            }),
+            _buildDivider(),
+
+            // 3. Crop Details
+            _buildMenuItem(Icons.grass, "Crop Details", onTap: () {
+              Navigator.pushNamed(context, AppRoutes.cropList);
+            }),
+            _buildDivider(),
+
+            // 4. Subscription
+            _buildSubscriptionMenuItem(),
+            _buildDivider(),
+
+            // 5. KYC
             _buildMenuItem(Icons.verified_user_outlined, l10n.kyc, onTap: () {}),
-            _buildDivider(),
-            
-            _buildMenuItem(Icons.agriculture_outlined, l10n.farmDetails, onTap: () {}),
             _buildDivider(),
             
             // ✅ CHANGED: Used standard Bank Icon instead of Bag
@@ -261,6 +286,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildDivider() {
     return const Divider(color: Color(0xFFEEEEEE), height: 1, thickness: 1);
+  }
+
+  Widget _buildSubscriptionMenuItem() {
+    return ListTile(
+      onTap: () {
+        Navigator.pushNamed(context, AppRoutes.subscription);
+      },
+      contentPadding: const EdgeInsets.symmetric(vertical: 4),
+      leading: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: _isSubscribed ? Colors.green.shade50 : Colors.orange.shade50,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          _isSubscribed ? Icons.verified : Icons.card_membership,
+          color: _isSubscribed ? Colors.green : Colors.orange,
+          size: 24,
+        ),
+      ),
+      title: Text(
+        "Subscription",
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: Colors.black87,
+        ),
+      ),
+      subtitle: Text(
+        _isSubscribed ? "Active" : "Subscribe Now - ₹999/year",
+        style: GoogleFonts.poppins(
+          fontSize: 12,
+          color: _isSubscribed ? Colors.green : Colors.orange,
+        ),
+      ),
+      trailing: _isSubscribed 
+          ? const Icon(Icons.check_circle, color: Colors.green, size: 20)
+          : Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.orange,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                "Subscribe",
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+    );
   }
 
   Widget _buildLogoutButton(BuildContext context, AppLocalizations l10n) {

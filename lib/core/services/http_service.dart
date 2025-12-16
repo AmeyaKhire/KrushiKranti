@@ -1,25 +1,39 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'storage_service.dart'; // ✅ Import the new service
 
 class HttpService {
-  // Base URL - API Gateway
+  // Base URL - API Gateway with platform detection
   // ⚠️ IMPORTANT: 
-  // - For Windows/Mac/Linux: use 'http://localhost:4004'
-  // - For Android Emulator: use 'http://10.0.2.2:4004'
-  // - For Real Device: use 'http://YOUR_LOCAL_IP:4004' (e.g., 'http://192.168.1.X:4004')
-  static const String baseUrl = "http://localhost:4004"; 
+  // - Web/Desktop: uses 'http://localhost:4004'
+  // - Android/iOS: uses your local IP address (192.168.1.42)
+  static String get baseUrl {
+    if (kIsWeb) {
+      // Web platform (Chrome browser, etc.)
+      return "http://localhost:4004";
+    } else if (Platform.isAndroid || Platform.isIOS) {
+      // Mobile platforms (Android/iOS) - use your computer's local IP
+      return "http://192.168.1.42:4004"; // ✅ Your Wi-Fi IP address
+    } else {
+      // Desktop platforms (Windows, Mac, Linux)
+      return "http://localhost:4004";
+    }
+  } 
 
   // --- GET REQUEST ---
   static Future<dynamic> get(String endpoint) async {
-    final url = Uri.parse('$baseUrl/$endpoint');
+    final uri = endpoint.startsWith('http')
+        ? Uri.parse(endpoint)
+        : Uri.parse('$baseUrl/$endpoint');
     
     // ✅ ACTION: Fetch Token from Storage
     String? token = await StorageService.getToken(); 
     
     try {
       final response = await http.get(
-        url,
+        uri,
         headers: {
           "Content-Type": "application/json",
           // ✅ ACTION: Attach Token if it exists
@@ -34,14 +48,16 @@ class HttpService {
 
   // --- POST REQUEST ---
   static Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
-    final url = Uri.parse('$baseUrl/$endpoint');
+    final uri = endpoint.startsWith('http')
+        ? Uri.parse(endpoint)
+        : Uri.parse('$baseUrl/$endpoint');
     
     // ✅ ACTION: Fetch Token from Storage
     String? token = await StorageService.getToken();
 
     try {
       final response = await http.post(
-        url,
+        uri,
         body: jsonEncode(data),
         headers: {
           "Content-Type": "application/json",
@@ -57,14 +73,16 @@ class HttpService {
 
   // --- PUT REQUEST ---
   static Future<dynamic> put(String endpoint, Map<String, dynamic> data) async {
-    final url = Uri.parse('$baseUrl/$endpoint');
+    final uri = endpoint.startsWith('http')
+        ? Uri.parse(endpoint)
+        : Uri.parse('$baseUrl/$endpoint');
     
     // ✅ ACTION: Fetch Token from Storage
     String? token = await StorageService.getToken();
 
     try {
       final response = await http.put(
-        url,
+        uri,
         body: jsonEncode(data),
         headers: {
           "Content-Type": "application/json",

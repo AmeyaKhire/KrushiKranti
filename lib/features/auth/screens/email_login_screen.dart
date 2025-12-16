@@ -6,6 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/http_service.dart';
+import '../../subscription/services/subscription_service.dart';
 
 class EmailLoginScreen extends StatefulWidget {
   const EmailLoginScreen({super.key});
@@ -58,14 +59,47 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         phone: userInfo['phoneNumber'] ?? "",
       );
 
+      // Check subscription status
+      bool isSubscribed = false;
+      try {
+        final subStatus = await SubscriptionService.getSubscriptionStatus();
+        // Check multiple possible fields to determine subscription status
+        isSubscribed = subStatus['isSubscribed'] == true || 
+                      subStatus['subscriptionStatus'] == 'ACTIVE' ||
+                      subStatus['subscriptionStatus'] == 'active';
+        
+        if (isSubscribed) {
+          final endDate = subStatus['subscriptionEndDate']?.toString() ?? 
+                         subStatus['expiresAt']?.toString();
+          await StorageService.saveSubscriptionStatus(
+            true,
+            endDate: endDate,
+          );
+        } else {
+          await StorageService.saveSubscriptionStatus(false);
+        }
+      } catch (_) {
+        // If we can't determine, treat as not subscribed to show welcome
+        await StorageService.saveSubscriptionStatus(false);
+      }
+
       if (!mounted) return;
 
-      // Navigate to Dashboard
+      // Navigate based on subscription status
+      if (isSubscribed) {
       Navigator.pushNamedAndRemoveUntil(
         context,
         AppRoutes.dashboard,
         (route) => false,
       );
+      } else {
+        // Not subscribed - show welcome pages
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.welcome,
+          (route) => false,
+        );
+      }
     } catch (e) {
       if (!mounted) return;
 

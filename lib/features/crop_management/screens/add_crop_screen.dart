@@ -20,6 +20,12 @@ class _AddCropScreenState extends State<AddCropScreen> {
   int? selectedFarmId;
   
   final TextEditingController acresController = TextEditingController();
+  final TextEditingController sowingDateController = TextEditingController();
+  final TextEditingController harvestingDateController = TextEditingController();
+  
+  String? selectedCropStatus;
+  
+  final List<String> cropStatuses = ['PLANNED', 'SOWN', 'GROWING', 'HARVESTED', 'FAILED'];
 
   List<Map<String, dynamic>> cropTypes = [];
   List<Map<String, dynamic>> cropNames = [];
@@ -31,6 +37,16 @@ class _AddCropScreenState extends State<AddCropScreen> {
   void initState() {
     super.initState();
     _loadData();
+    // Set default crop status
+    selectedCropStatus = 'PLANNED';
+  }
+
+  @override
+  void dispose() {
+    acresController.dispose();
+    sowingDateController.dispose();
+    harvestingDateController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -164,10 +180,10 @@ class _AddCropScreenState extends State<AddCropScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.brandGreen))
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
                   // Farm Selection (if multiple farms)
                   if (farms.length > 1) ...[
                     Text("Select Farm", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
@@ -185,8 +201,8 @@ class _AddCropScreenState extends State<AddCropScreen> {
                   ],
                   
                   Text(l10n.selectCategory, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  const SizedBox(height: 8),
-                  
+            const SizedBox(height: 8),
+            
                   // 1. CROP TYPE DROPDOWN
                   DropdownButtonFormField<int>(
                     key: ValueKey(selectedCropTypeId ?? 'type_reset'),
@@ -195,7 +211,7 @@ class _AddCropScreenState extends State<AddCropScreen> {
                     items: cropTypes.map((type) => DropdownMenuItem(
                       value: type['id'] as int,
                       child: Text(type['displayName'] as String),
-                    )).toList(),
+              )).toList(),
                     onChanged: (val) {
                       setState(() {
                         selectedCropTypeId = val;
@@ -208,13 +224,13 @@ class _AddCropScreenState extends State<AddCropScreen> {
                         _loadCropNames(val);
                       }
                     },
-                  ),
-                  const SizedBox(height: 20),
-                  
+            ),
+            const SizedBox(height: 20),
+            
                   Text(l10n.selectCropName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  const SizedBox(height: 8),
-                  
-                  // 2. CROP NAME DROPDOWN
+            const SizedBox(height: 8),
+            
+            // 2. CROP NAME DROPDOWN
                   _isLoadingCropNames
                       ? const Center(child: Padding(
                           padding: EdgeInsets.all(20.0),
@@ -227,7 +243,7 @@ class _AddCropScreenState extends State<AddCropScreen> {
                           items: cropNames.map((name) => DropdownMenuItem(
                             value: name['id'] as int,
                             child: Text(name['displayName'] as String ?? name['name'] as String),
-                          )).toList(),
+                    )).toList(),
                           onChanged: selectedCropTypeId == null || cropNames.isEmpty
                               ? null
                               : (val) {
@@ -239,30 +255,80 @@ class _AddCropScreenState extends State<AddCropScreen> {
                                     }
                                   });
                                 },
-                        ),
-                  const SizedBox(height: 20),
+            ),
+            const SizedBox(height: 20),
 
-                  // 3. ACRES INPUT
+            // 3. ACRES INPUT
                   Text(l10n.landArea, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: acresController,
-                    keyboardType: TextInputType.number,
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: acresController,
+              keyboardType: TextInputType.number,
                     decoration: _inputDecoration(l10n.acresHint).copyWith(suffixText: l10n.acresSuffix),
+            ),
+            const SizedBox(height: 20),
+
+            // 4. SOWING DATE
+            Text("Sowing Date", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: () => _selectDate(context, sowingDateController, "Sowing Date"),
+              child: AbsorbPointer(
+                child: TextFormField(
+                  controller: sowingDateController,
+                  decoration: _inputDecoration("Select sowing date").copyWith(
+                    suffixIcon: const Icon(Icons.calendar_today, color: AppColors.brandGreen),
                   ),
-                  
-                  const SizedBox(height: 40),
-                  
-                  // 4. SAVE BUTTON
-                  SizedBox(
-                    height: 50,
-                    child: ElevatedButton(
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // 5. EXPECTED HARVESTING DATE
+            Text("Expected Harvesting Date", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: () => _selectDate(context, harvestingDateController, "Expected Harvesting Date"),
+              child: AbsorbPointer(
+                child: TextFormField(
+                  controller: harvestingDateController,
+                  decoration: _inputDecoration("Select expected harvesting date").copyWith(
+                    suffixIcon: const Icon(Icons.calendar_today, color: AppColors.brandGreen),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // 6. CROP STATUS
+            Text("Crop Status", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              decoration: _inputDecoration("Select crop status"),
+              value: selectedCropStatus,
+              items: cropStatuses.map((status) {
+                return DropdownMenuItem(
+                  value: status,
+                  child: Text(status.replaceAll('_', ' ')),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() => selectedCropStatus = val);
+              },
+            ),
+            
+            const SizedBox(height: 40),
+            
+            // 4. SAVE BUTTON
+            SizedBox(
+              height: 50,
+              child: ElevatedButton(
                       onPressed: _isLoading ? null : () => _saveCrop(l10n),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.brandGreen,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.brandGreen,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
                       child: _isLoading
                           ? const SizedBox(
                               height: 20,
@@ -273,12 +339,52 @@ class _AddCropScreenState extends State<AddCropScreen> {
                               ),
                             )
                           : Text(l10n.saveCropBtn, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                ],
               ),
             ),
+          ],
+        ),
+      ),
     );
+  }
+
+  Future<void> _selectDate(BuildContext context, TextEditingController controller, String fieldName) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.brandGreen,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() {
+        controller.text = "${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}";
+      });
+    }
+  }
+
+  String? _formatDateForAPI(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return null;
+    try {
+      // Convert DD/MM/YYYY to YYYY-MM-DD
+      final parts = dateStr.split("/");
+      if (parts.length == 3) {
+        return "${parts[2]}-${parts[1].padLeft(2, '0')}-${parts[0].padLeft(2, '0')}";
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
   }
 
   InputDecoration _inputDecoration(String label) {
@@ -331,16 +437,18 @@ class _AddCropScreenState extends State<AddCropScreen> {
         farmId: selectedFarmId!,
         cropNameId: selectedCropNameId!,
         areaAcres: acres,
-        sowingDate: DateTime.now().toIso8601String().split('T')[0], // YYYY-MM-DD format
+        sowingDate: _formatDateForAPI(sowingDateController.text),
+        harvestingDate: _formatDateForAPI(harvestingDateController.text),
+        cropStatus: selectedCropStatus,
       );
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
             content: Text(l10n.cropAddedSuccess),
-            backgroundColor: Colors.green,
-          ),
-        );
+          backgroundColor: Colors.green,
+        ),
+      );
         Navigator.pop(context, true); // Return true to indicate success
       }
     } catch (e) {

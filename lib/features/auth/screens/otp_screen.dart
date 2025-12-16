@@ -4,6 +4,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/http_service.dart';
+import '../../subscription/services/subscription_service.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -195,16 +196,48 @@ class _OtpScreenState extends State<OtpScreen> {
           phone: userInfo['phoneNumber'] ?? phoneNumber,
         );
 
+        // Check subscription status
+        bool isSubscribed = false;
+        try {
+          final subStatus = await SubscriptionService.getSubscriptionStatus();
+          // Check multiple possible fields to determine subscription status
+          isSubscribed = subStatus['isSubscribed'] == true || 
+                        subStatus['subscriptionStatus'] == 'ACTIVE' ||
+                        subStatus['subscriptionStatus'] == 'active';
+          
+          if (isSubscribed) {
+            final endDate = subStatus['subscriptionEndDate']?.toString() ?? 
+                           subStatus['expiresAt']?.toString();
+            await StorageService.saveSubscriptionStatus(
+              true,
+              endDate: endDate,
+            );
+          } else {
+            await StorageService.saveSubscriptionStatus(false);
+          }
+        } catch (_) {
+          // If we can't determine, treat as not subscribed to show welcome
+          await StorageService.saveSubscriptionStatus(false);
+        }
+
         if (!mounted) return;
 
-        // Navigate to Dashboard
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoutes.dashboard,
-          (route) => false, // Clear back stack
-        );
+        // Navigate based on subscription status
+        if (isSubscribed) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.dashboard,
+            (route) => false,
+          );
+        } else {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.welcome,
+            (route) => false,
+          );
+        }
       } else {
-        // CASE B: User is Signing Up -> Call /auth/verify-otp
+        // CASE B: User is Signing Up -> Call /auth/verify-otp, then login to get token
         final response = await HttpService.post(
           "auth/verify-otp",
           {
@@ -219,7 +252,7 @@ class _OtpScreenState extends State<OtpScreen> {
           throw Exception("OTP verification failed. Please try again.");
         }
 
-        // Save user details
+        // Save basic user details
         await StorageService.saveAuthDetails(
           email: data['email'] ?? '',
           phone: data['phoneNumber'] ?? phoneNumber,
@@ -234,9 +267,48 @@ class _OtpScreenState extends State<OtpScreen> {
           profilePicPath: null,
         );
 
+        // Request a new login OTP (since the registration OTP was consumed)
+        await HttpService.post(
+          "auth/request-login-otp",
+          {"phoneNumber": phoneNumber},
+        );
+
+        // Get the new OTP for login (using test endpoint for now)
+        // In production, this would be sent via SMS and user would enter it
+        // For now, we'll fetch it from the test endpoint
+        final otpResponse = await HttpService.get("auth/get-otp/$phoneNumber");
+        final String loginOtp = otpResponse['data'] ?? '';
+        
+        if (loginOtp.isEmpty) {
+          throw Exception("Failed to get login OTP. Please try logging in manually.");
+        }
+
+        // Use the new OTP to login and get JWT token
+        final loginResp = await HttpService.post(
+          "auth/login",
+          {
+            "phoneNumber": phoneNumber,
+            "otp": loginOtp,
+          },
+        );
+        final String accessToken = loginResp['accessToken'] ?? '';
+        final userInfo = loginResp['user'] ?? {};
+        if (accessToken.isEmpty) {
+          throw Exception("Login failed after signup. Please try again.");
+        }
+
+        await StorageService.saveToken(accessToken);
+        await StorageService.saveAuthDetails(
+          email: userInfo['email'] ?? data['email'] ?? '',
+          phone: userInfo['phoneNumber'] ?? phoneNumber,
+        );
+
+        // New users are unsubscribed by default
+        await StorageService.saveSubscriptionStatus(false);
+
         if (!mounted) return;
 
-        // Navigate to Onboarding
+        // Navigate to Onboarding (then welcome will show after completion flow)
         Navigator.pushReplacementNamed(
           context,
           AppRoutes.onboardingPersonal,

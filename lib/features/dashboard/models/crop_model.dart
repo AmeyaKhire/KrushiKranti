@@ -7,6 +7,18 @@ class CropModel {
   final String? imageUrl; // For the photo
   final String? cropTypeName; // Full crop type name
   final String? cropDisplayName; // Display name from backend
+  
+  // Additional fields from backend
+  final int? farmId;
+  final String? farmName;
+  final int? cropTypeId;
+  final String? cropTypeDisplayName;
+  final int? cropNameId;
+  final String? cropName;
+  final String? cropLocalName;
+  final DateTime? harvestingDate;
+  final String? cropStatus;
+  final bool? isActive;
 
   CropModel({
     required this.id,
@@ -17,6 +29,16 @@ class CropModel {
     this.imageUrl,
     this.cropTypeName,
     this.cropDisplayName,
+    this.farmId,
+    this.farmName,
+    this.cropTypeId,
+    this.cropTypeDisplayName,
+    this.cropNameId,
+    this.cropName,
+    this.cropLocalName,
+    this.harvestingDate,
+    this.cropStatus,
+    this.isActive,
   });
 
   // Factory for API
@@ -39,6 +61,16 @@ class CropModel {
       imageUrl: json['iconUrl'],
       cropTypeName: json['cropTypeName'],
       cropDisplayName: json['cropDisplayName'] ?? json['cropName'],
+      farmId: json['farmId'],
+      farmName: json['farmName'],
+      cropTypeId: json['cropTypeId'],
+      cropTypeDisplayName: json['cropTypeDisplayName'],
+      cropNameId: json['cropNameId'],
+      cropName: json['cropName'],
+      cropLocalName: json['cropLocalName'],
+      harvestingDate: parseDate(json['harvestingDate']),
+      cropStatus: json['cropStatus'],
+      isActive: json['isActive'],
     );
   }
 }

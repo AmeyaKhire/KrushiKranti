@@ -15,7 +15,11 @@ class StorageService {
   static const String _genderKey = 'user_gender';
   
   // ✅ NEW KEY: Alternate Phone
-  static const String _altPhoneKey = 'user_alt_phone'; 
+  static const String _altPhoneKey = 'user_alt_phone';
+  
+  // --- SUBSCRIPTION KEYS ---
+  static const String _subscriptionStatusKey = 'subscription_status';
+  static const String _subscriptionEndDateKey = 'subscription_end_date'; 
 
   // ===========================================================================
   // 1. SAVE AUTH DATA (From Signup Screen)
@@ -99,6 +103,8 @@ class StorageService {
     await prefs.remove(_dobKey);
     await prefs.remove(_genderKey);
     await prefs.remove(_altPhoneKey); // ✅ Remove Alt Phone on logout
+    await prefs.remove(_subscriptionStatusKey); // ✅ Remove subscription status on logout
+    await prefs.remove(_subscriptionEndDateKey);
   }
 
   // ===========================================================================
@@ -112,5 +118,32 @@ class StorageService {
   static Future<String?> getLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_languageKey);
+  }
+
+  // ===========================================================================
+  // 7. SUBSCRIPTION STATUS
+  // ===========================================================================
+  static Future<void> saveSubscriptionStatus(bool isSubscribed, {String? endDate}) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_subscriptionStatusKey, isSubscribed);
+    if (endDate != null) {
+      await prefs.setString(_subscriptionEndDateKey, endDate);
+    }
+  }
+
+  static Future<bool> isSubscribed() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_subscriptionStatusKey) ?? false;
+  }
+
+  static Future<String?> getSubscriptionEndDate() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_subscriptionEndDateKey);
+  }
+
+  static Future<void> clearSubscriptionStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_subscriptionStatusKey);
+    await prefs.remove(_subscriptionEndDateKey);
   }
 }

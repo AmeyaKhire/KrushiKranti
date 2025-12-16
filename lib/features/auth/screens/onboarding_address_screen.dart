@@ -137,12 +137,26 @@ class _OnboardingAddressScreenState extends State<OnboardingAddressScreen> {
 
       if (!mounted) return;
 
-      // Navigate to Dashboard
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        AppRoutes.dashboard,
-        (route) => false,
-      );
+      // Check subscription status - if not subscribed, go to welcome pages
+      final isSubscribed = await StorageService.isSubscribed();
+      
+      if (!mounted) return;
+
+      if (isSubscribed) {
+        // Already subscribed - go to dashboard
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.dashboard,
+          (route) => false,
+        );
+      } else {
+        // Not subscribed - show welcome pages
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.welcome,
+          (route) => false,
+        );
+      }
     } catch (e) {
       if (!mounted) return;
 

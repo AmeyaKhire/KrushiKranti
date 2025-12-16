@@ -57,7 +57,7 @@ class CropService {
       
       return farmsData.map((json) => {
         'id': json['id'],
-        'name': json['name'] ?? 'Farm ${json['id']}',
+        'name': json['farmName'] ?? 'Farm ${json['id']}',
       }).toList();
     } catch (e) {
       throw Exception('Failed to fetch farms: $e');
@@ -70,6 +70,8 @@ class CropService {
     required int cropNameId,
     required double areaAcres,
     String? sowingDate,
+    String? harvestingDate,
+    String? cropStatus,
   }) async {
     try {
       final requestBody = {
@@ -77,6 +79,8 @@ class CropService {
         'cropNameId': cropNameId,
         'areaAcres': areaAcres,
         if (sowingDate != null) 'sowingDate': sowingDate,
+        if (harvestingDate != null) 'harvestingDate': harvestingDate,
+        if (cropStatus != null) 'cropStatus': cropStatus,
       };
       
       await HttpService.post("farmer/profile/crops", requestBody);

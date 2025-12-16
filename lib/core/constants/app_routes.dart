@@ -17,10 +17,17 @@ import '../../features/auth/screens/email_login_screen.dart';
 // --- YOUR SCREENS (Dashboard) ---
 import '../../features/dashboard/screens/main_layout_screen.dart';
 import '../../features/dashboard/screens/profile_screen.dart'; // ✅ This import is now used below
+import '../../features/dashboard/screens/my_details_screen.dart';
+import '../../features/farm_management/screens/farm_list_screen.dart';
+import '../../features/farm_management/screens/add_farm_screen.dart';
 import '../../features/crop_management/screens/crop_list_screen.dart';
 import '../../features/crop_management/screens/add_crop_screen.dart';
 import '../../features/funds/screens/request_funds_screen.dart';
 import '../../features/sell/screens/sell_screen.dart';
+
+// Subscription Screens
+import '../../features/subscription/screens/welcome_screen.dart';
+import '../../features/subscription/screens/subscription_screen.dart';
 
 // Import
 // Though this is mostly used in MainLayout
@@ -44,11 +51,18 @@ class AppRoutes {
 
   static const String dashboard = '/dashboard';
   static const String profile = '/profile'; // ✅ ADDED PROFILE ROUTE NAME
+  static const String myDetails = '/my_details';
+  static const String farmList = '/farm_list';
+  static const String addFarm = '/add_farm';
   static const String cropList = '/crop_list';
   static const String addCrop = '/add_crop';
   static const String requestFunds = '/request_funds';
   static const String sell = '/sell';
   static const String orderDetail = '/order_detail';
+  
+  // Subscription routes
+  static const String welcome = '/welcome';
+  static const String subscription = '/subscription';
 
   // --- Route Map ---
   static Map<String, WidgetBuilder> get routes => {
@@ -67,10 +81,17 @@ class AppRoutes {
 
     dashboard: (context) => const MainLayoutScreen(),
     profile: (context) => const ProfileScreen(), // ✅ ADDED PROFILE WIDGET
+    myDetails: (context) => const MyDetailsScreen(),
+    farmList: (context) => const FarmListScreen(),
+    addFarm: (context) => const AddFarmScreen(),
     cropList: (context) => const CropListScreen(),
     addCrop: (context) => const AddCropScreen(),
     requestFunds: (context) => const RequestFundsScreen(),
     sell: (context) => const SellScreen(),
     orderDetail: (context) => const OrderDetailScreen(),
+    
+    // Subscription routes
+    welcome: (context) => const WelcomeScreen(),
+    subscription: (context) => const SubscriptionScreen(),
   };
 }
